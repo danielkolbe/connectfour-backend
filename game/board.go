@@ -1,6 +1,8 @@
 package game
 
 type Color int
+const nRows int = 6;
+const nCol int = 7;
 
 const(
 	NONE Color = iota
@@ -8,10 +10,10 @@ const(
 	RED
 )
 
-type Board [7][6] Color
+type Board [nRows][nCol] Color
 
 func NewBoard() Board {
-	return [7][6]Color{};
+	return [nRows][nCol]Color{};
 }
 
 func (b *Board) AddChip(column int, color Color){
