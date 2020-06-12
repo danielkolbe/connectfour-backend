@@ -6,10 +6,7 @@ import (
 )
 
 func main() {
-	board := game.Board{}
-	/*for _,row := range board.COLORS {
-		fmt.Printf("%v\n", row)
-	}*/
+	board := game.NewBoard();
 	board.AddChip(2, game.RED)
 	for _,row := range board {
 		fmt.Printf("%v\n", row)
