@@ -26,3 +26,12 @@ func TestAddChip(t *testing.T) {
 		t.Errorf("Color of field 6,4 of the board should be blue but was %v", Color(b[4][4]))
 	}
 }
+
+func TestNextColor(t *testing.T){
+	b := NewBoard()
+	nextColor := nextColor(b)
+	if NONE != nextColor {
+		t.Errorf("Next color must be %v but was %v", NONE, nextColor)
+	}
+	b.AddChip(4,2)
+}		

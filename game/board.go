@@ -38,3 +38,22 @@ func (b *Board) AddChip(column int, color Color) error{
 	}
 	return nil
 }
+
+func nextColor(b Board) Color {
+	red:= 0
+	blue := 0
+	for _,row := range b {
+		for _,color := range row {
+			if RED == color {
+				red ++;
+			}
+			if BLUE == color {
+				blue ++
+			}
+		}
+	} 
+	if red > blue {return RED};
+	if blue < red {return BLUE};
+	return 0;
+}
+ 
