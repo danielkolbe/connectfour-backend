@@ -11,7 +11,7 @@ func main() {
 	if nil != err {
 		fmt.Println(err)
 	}
-	for _, row := range board {
+	for _, row := range board.Fields {
 		fmt.Printf("%v\n", row)
 	}
 }

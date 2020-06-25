@@ -6,7 +6,7 @@ import (
 
 func TestNewBoard(t *testing.T) {
 	b := NewBoard()
-	for i, row := range b {
+	for i, row := range b.Fields {
 		for j, color := range row {
 			if NONE != color {
 				t.Errorf("A newly created board should be blank but the color of field %v,%v was %v", i, j, Color(1))
@@ -19,19 +19,29 @@ func TestAddChip(t *testing.T) {
 	b := NewBoard()
 	b.AddChip(4,2)
 	b.AddChip(4,1)
-	if RED != b[5][4] {
-		t.Errorf("Color of field 6,4 of the board should be red but was %v", Color(b[5][4]))
+	if RED != b.Fields[5][4] {
+		t.Errorf("Color of field 6,4 of the board should be red but was %v", Color(b.Fields[5][4]))
 	}
-	if BLUE != b[4][4] {
-		t.Errorf("Color of field 6,4 of the board should be blue but was %v", Color(b[4][4]))
+	if BLUE != b.Fields[4][4] {
+		t.Errorf("Color of field 6,4 of the board should be blue but was %v", Color(b.Fields[4][4]))
 	}
 }
 
-func TestNextColor(t *testing.T){
+func TestNextTurn(t *testing.T) {
 	b := NewBoard()
-	nextColor := nextColor(b)
-	if NONE != nextColor {
-		t.Errorf("Next color must be %v but was %v", NONE, nextColor)
+	if NONE != b.nextTurn {
+		t.Errorf("Next color must be %v but was %v", NONE, b.nextTurn)
 	}
-	b.AddChip(4,2)
+	b.AddChip(4, RED)
+	if BLUE !=  b.nextTurn {
+		t.Errorf("Next color must be %v but was %v", BLUE, b.nextTurn)
+	}
+	b.AddChip(3, BLUE)
+	if RED !=  b.nextTurn {
+		t.Errorf("Next color must be %v but was %v", RED, b.nextTurn)
+	}
+	b.AddChip(3, RED)
+	if BLUE !=  b.nextTurn {
+		t.Errorf("Next color must be %v but was %v", BLUE, b.nextTurn)
+	}
 }		

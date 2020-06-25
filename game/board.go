@@ -5,7 +5,10 @@ import (
 )
 
 type Color int
-type Board [nRows][nCol] Color
+type Board struct {
+	Fields [nRows][nCol] Color
+	nextTurn Color
+}	
 const nRows int = 6
 const nCol int = 7
 
@@ -23,37 +26,21 @@ func (color Color) String() string {
 }
 
 func NewBoard() Board {
-	return [nRows][nCol]Color{}
+	return Board{Fields: [nRows][nCol]Color{}}
 }
 
 func (b *Board) AddChip(column int, color Color) error{
 	if !(BLUE == color || RED == color) {
 		return fmt.Errorf("Expected chip color to be either %v(%d) or %v(%d) but received %v(%d).", BLUE, BLUE, RED, RED, color, color)
 	}
-	for i := len(b)-1; i>=0; i-- {
-		if(NONE == b[i][column]) {
-			b[i][column] = color
+	for i := len(b.Fields)-1; i>=0; i-- {
+		if(NONE == b.Fields[i][column]) {
+			b.Fields[i][column] = color
 			break
 		}
 	}
+	b.nextTurn = (2-(color-1))
 	return nil
 }
 
-func nextColor(b Board) Color {
-	red:= 0
-	blue := 0
-	for _,row := range b {
-		for _,color := range row {
-			if RED == color {
-				red ++;
-			}
-			if BLUE == color {
-				blue ++
-			}
-		}
-	} 
-	if red > blue {return RED};
-	if blue < red {return BLUE};
-	return 0;
-}
  
