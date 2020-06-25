@@ -7,7 +7,7 @@ import (
 
 func main() {
 	board := game.NewBoard()
-	err := board.AddChip(2, 1)
+	err := board.AddChip(2)
 	if nil != err {
 		fmt.Println(err)
 	}

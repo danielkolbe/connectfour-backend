@@ -14,11 +14,23 @@ func TestNewBoard(t *testing.T) {
 		}
 	}
 }
-
+func TestError(t *testing.T) {
+	b := NewBoard()
+	for i:=0 ; i < nRows; i++ {
+		error := b.AddChip(0)
+		if nil != error {
+			t.Errorf("Error should be nil but was: `%v`.", error)
+		}
+	}
+	error := b.AddChip(0)
+	if nil == error {
+		t.Errorf("No error returned.")
+	}
+}
 func TestAddChip(t *testing.T) {
 	b := NewBoard()
-	b.AddChip(4,2)
-	b.AddChip(4,1)
+	b.AddChip(4)
+	b.AddChip(4)
 	if RED != b.Fields[5][4] {
 		t.Errorf("Color of field 6,4 of the board should be red but was %v", Color(b.Fields[5][4]))
 	}
@@ -27,21 +39,21 @@ func TestAddChip(t *testing.T) {
 	}
 }
 
-func TestNextTurn(t *testing.T) {
+func TestNextColor(t *testing.T) {
 	b := NewBoard()
-	if NONE != b.nextTurn {
-		t.Errorf("Next color must be %v but was %v", NONE, b.nextTurn)
+	if RED != b.nextColor {
+		t.Errorf("Next color must be %v but was %v", NONE, b.nextColor)
 	}
-	b.AddChip(4, RED)
-	if BLUE !=  b.nextTurn {
-		t.Errorf("Next color must be %v but was %v", BLUE, b.nextTurn)
+	b.AddChip(4)
+	if BLUE !=  b.nextColor {
+		t.Errorf("Next color must be %v but was %v", BLUE, b.nextColor)
 	}
-	b.AddChip(3, BLUE)
-	if RED !=  b.nextTurn {
-		t.Errorf("Next color must be %v but was %v", RED, b.nextTurn)
+	b.AddChip(3)
+	if RED !=  b.nextColor {
+		t.Errorf("Next color must be %v but was %v", RED, b.nextColor)
 	}
-	b.AddChip(3, RED)
-	if BLUE !=  b.nextTurn {
-		t.Errorf("Next color must be %v but was %v", BLUE, b.nextTurn)
+	b.AddChip(3)
+	if BLUE !=  b.nextColor {
+		t.Errorf("Next color must be %v but was %v", BLUE, b.nextColor)
 	}
 }		

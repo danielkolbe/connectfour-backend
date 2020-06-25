@@ -7,7 +7,7 @@ import (
 type Color int
 type Board struct {
 	Fields [nRows][nCol] Color
-	nextTurn Color
+	nextColor Color
 }	
 const nRows int = 6
 const nCol int = 7
@@ -26,20 +26,22 @@ func (color Color) String() string {
 }
 
 func NewBoard() Board {
-	return Board{Fields: [nRows][nCol]Color{}}
+	return Board{Fields: [nRows][nCol]Color{}, nextColor: RED}
 }
 
-func (b *Board) AddChip(column int, color Color) error{
-	if !(BLUE == color || RED == color) {
-		return fmt.Errorf("Expected chip color to be either %v(%d) or %v(%d) but received %v(%d).", BLUE, BLUE, RED, RED, color, color)
+func (b *Board) AddChip(column int) error {
+	
+	if NONE != b.Fields[0][column]  {
+		return fmt.Errorf("Selected column %v is full", column)
 	}
-	for i := len(b.Fields)-1; i>=0; i-- {
-		if(NONE == b.Fields[i][column]) {
-			b.Fields[i][column] = color
+	
+	for row := len(b.Fields)-1; row>=0; row-- {
+		if(NONE == b.Fields[row][column]) {
+			b.Fields[row][column] = b.nextColor
 			break
 		}
 	}
-	b.nextTurn = (2-(color-1))
+	b.nextColor = (2-(b.nextColor-1))
 	return nil
 }
 
