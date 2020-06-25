@@ -2,16 +2,15 @@ package main
 
 import (
 	"fmt"
-	"github.com/danielkolbe/connectfour/game"
+	"net/http"
+	"github.com/danielkolbe/connectfour/api"
 )
 
 func main() {
-	board := game.NewBoard()
-	err := board.AddChip(2)
-	if nil != err {
-		fmt.Println(err)
-	}
-	for _, row := range board.Fields {
-		fmt.Printf("%v\n", row)
+	http.HandleFunc("/turn", handlers.Turn);
+	http.Handle("/favicon.ico", http.NotFoundHandler())
+	err := http.ListenAndServe(":8080", nil)
+	if(nil != err) {
+		fmt.Print(err)
 	}
 }
