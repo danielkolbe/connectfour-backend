@@ -5,45 +5,43 @@ import (
 )
 
 type color int
-type Board struct {
-	Fields [nRows][nCol] color
+type board struct {
+	fields    [nRows][nCol]color
 	nextColor color
-}	
+}
 
 const nRows int = 6
 const nCol int = 7
 
-const(
-	NONE color = iota
-	BLUE
-	RED
+const (
+	none color = iota
+	blue
+	red
 )
 
 func (c color) String() string {
-	if(c > 2 || c < 0) {
+	if c > 2 || c < 0 {
 		return "Unknown"
 	}
 	return []string{"NONE", "BLUE", "RED"}[c]
 }
 
-func NewBoard() Board {
-	return Board{Fields: [nRows][nCol]color{}, nextColor: RED}
+func NewBoard() *board {
+	return &board{fields: [nRows][nCol]color{}, nextColor: red}
 }
 
-func (b *Board) AddChip(column int) error {
-	
-	if NONE != b.Fields[0][column]  {
+func (b *board) addChip(column int) error {
+
+	if none != b.fields[0][column] {
 		return fmt.Errorf("Column %v is full", column)
 	}
-	
-	for row := len(b.Fields)-1; row>=0; row-- {
-		if(NONE == b.Fields[row][column]) {
-			b.Fields[row][column] = b.nextColor
+
+	for row := len(b.fields) - 1; row >= 0; row-- {
+		if none == b.fields[row][column] {
+			b.fields[row][column] = b.nextColor
 			break
 		}
 	}
-	b.nextColor = (2-(b.nextColor-1))
+	b.nextColor = (2 - (b.nextColor - 1))
 	return nil
 }
-
- 
