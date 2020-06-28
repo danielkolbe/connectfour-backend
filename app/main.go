@@ -7,8 +7,7 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/turn", handlers.Turn);
-	http.Handle("/favicon.ico", http.NotFoundHandler())
+	http.Handle("/", api.NewRouter())
 	err := http.ListenAndServe(":8080", nil)
 	if(nil != err) {
 		fmt.Print(err)
