@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"github.com/stretchr/testify/require"
 )
 
 func TestRouter(t *testing.T) {
@@ -12,26 +13,27 @@ func TestRouter(t *testing.T) {
 	req, _ := http.NewRequest("POST", "/turn?column=1", nil)
 	// Act
 	NewRouter().ServeHTTP(rr, req)
-	// Assert
-	if status := rr.Code; status != http.StatusOK {
-        t.Errorf("Handler returned wrong status code: got %v want %v", status, http.StatusOK)
-	}
+	// require
+	require.Equal(t, http.StatusOK, rr.Code, "handler returned wrong status code" )
 	// Arrange
 	rr = httptest.NewRecorder()
 	req, _ = http.NewRequest("GET", "/turn?column=1", nil)
 	// Act
 	NewRouter().ServeHTTP(rr, req)
-	// Assert
-	if status := rr.Code; status != http.StatusMethodNotAllowed {
-        t.Errorf("Handler returned wrong status code: got %v want %v", status,  http.StatusMethodNotAllowed)
-	}
+	// require
+	require.Equal(t, http.StatusMethodNotAllowed, rr.Code, "handler returned wrong status code" )
 	// Arrange
 	rr = httptest.NewRecorder()
 	req, _ = http.NewRequest("POST", "/unknown?column=1", nil)
 	// Act
 	NewRouter().ServeHTTP(rr, req)
-	// Assert
-	if status := rr.Code; status != http.StatusNotFound {
-		t.Errorf("Handler returned wrong status code: got %v want %v", status,   http.StatusNotFound)
-	}
+	// require
+	require.Equal(t, http.StatusNotFound, rr.Code, "handler returned wrong status code" )
+	// Arrange
+	rr = httptest.NewRecorder()
+	req, _ = http.NewRequest("POST", "/turn?unknown=1", nil)
+	// Act
+	NewRouter().ServeHTTP(rr, req)
+	// require
+	require.Equal(t, http.StatusBadRequest, rr.Code, "handler returned wrong status code" )
 }

@@ -23,7 +23,7 @@ func (c color) String() string {
 	if c > 2 || c < 0 {
 		return "Unknown"
 	}
-	return []string{"NONE", "BLUE", "RED"}[c]
+	return []string{"none", "blue", "red"}[c]
 }
 
 func NewBoard() *board {
@@ -33,7 +33,7 @@ func NewBoard() *board {
 func (b *board) addChip(column int) error {
 
 	if none != b.fields[0][column] {
-		return fmt.Errorf("Column %v is full", column)
+		return fmt.Errorf("column %v is full", column)
 	}
 
 	for row := len(b.fields) - 1; row >= 0; row-- {
