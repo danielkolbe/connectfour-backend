@@ -7,9 +7,11 @@ import (
 )
 
 func TestNewBoard(t *testing.T) {
+	// Arrange
 	b := NewBoard()
 	for i, row := range b.fields {
 		for j, color := range row {
+			// Assert
 			require.Equal(t, color, none, fmt.Sprintf("A newly created board should be blank but the color of field %v,%v was %v", i, j, color)) 
 		}
 	}
@@ -26,20 +28,32 @@ func TestErrorHandlingFullColumn(t *testing.T) {
 	require.NotEqual(t, nil, error, "No error returned.")
 }
 func TestAddChip(t *testing.T) {
+	// Arrange
 	b := NewBoard()
+	// Act
 	b.addChip(4)
 	b.addChip(4)
+	// Assert
 	require.Equal(t, red, b.fields[5][4], fmt.Sprintf("Color of field 5,4 of the board should be red but was %v", b.fields[5][4]))
 	require.Equal(t, blue, b.fields[4][4], fmt.Sprintf("Color of field 4,4 of the board should be blue but was %v", b.fields[4][4]))
 }
 
 func TestNextColor(t *testing.T) {
+	// Arrange
 	b := NewBoard()
+
+	// Assert
 	require.Equal(t, red, b.nextColor, fmt.Sprintf("Next color must be red but was %v", b.nextColor))
+	
+	// Act & Assert
 	b.addChip(4)
 	require.Equal(t, blue, b.nextColor, fmt.Sprintf("Next color must be blue but was %v", b.nextColor))
+	
+	// Act & Assert
 	b.addChip(3)
+	
 	require.Equal(t, red, b.nextColor, fmt.Sprintf("Next color must be red but was %v", b.nextColor))
+	// Act & Assert
 	b.addChip(3)
 	require.Equal(t, blue, b.nextColor, fmt.Sprintf("Next color must be blue but was %v", b.nextColor))
 }		
