@@ -9,7 +9,7 @@ import (
 
 func TestRouter(t *testing.T) {
 	// Test http 200
-	rr := httptest.NewRecorder()
+    rr := httptest.NewRecorder()
 	req, _ := http.NewRequest("POST", "/turn?column=1", nil)
 	NewRouter().ServeHTTP(rr, req)
 	require.Equal(t, http.StatusOK, rr.Code, "handler returned wrong status code" )

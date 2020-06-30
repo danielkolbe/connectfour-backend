@@ -8,7 +8,15 @@ import (
 	"github.com/satori/go.uuid"
 )
 
-func Turn(w http.ResponseWriter, req *http.Request) {
+type TurnHandler struct {
+	gameService game.GameService
+}
+
+func NewTurnHandler(gameService game.GameService) TurnHandler {
+	return TurnHandler{gameService}
+}
+
+func (h TurnHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	gameId := gameId(w, req)
 	c, err := strconv.Atoi(req.FormValue("column"))
 	if(nil != err) {
@@ -16,7 +24,7 @@ func Turn(w http.ResponseWriter, req *http.Request) {
 		fmt.Fprint(w, "Please provide a query parameter 'column' as integer greater or equal 0")
 		return
 	}
-	if(nil != game.Turn(c, gameId)) {
+	if(nil != h.gameService.Turn(c, gameId)) {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprint(w, err)
 	}
