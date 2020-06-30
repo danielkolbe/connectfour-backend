@@ -14,9 +14,9 @@ type GameServiceMock struct {
     mock.Mock
 }
 
-func (mock GameServiceMock) Turn(column int, gameId string) error {
-    fmt.Printf("column: %v gameId: %v", column, gameId)
-    args := mock.Called(column, gameId)
+func (mock *GameServiceMock) Turn(column int, gameID string) error {
+    fmt.Printf("column: %v gameId: %v", column, gameID)
+    args := mock.Called(column, gameID)
     
     return args.Error(0)
 }
@@ -28,7 +28,7 @@ var cookie *http.Cookie
 func setup () {
     gameServiceMock := GameServiceMock{} 
     gameServiceMock.On("Turn", 4,"324234-555").Return(nil);
-    h = NewTurnHandler(gameServiceMock)
+    h = NewTurnHandler(&gameServiceMock)
     cookie = &http.Cookie{Name: "gameId", Value: "324234-555"}
 }
 
