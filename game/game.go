@@ -1,7 +1,5 @@
 package game
 
-import "fmt"
-
 var gameDb = map[string]*board{}
 
 type GameService interface {
@@ -18,10 +16,6 @@ func (c CFour) Turn(column int, gameId string) error {
 		b = NewBoard()
 		gameDb[gameId] = b
 	}
-	fmt.Printf("gameid: %v\n", gameId)
-	for _, row := range b.fields {
-		fmt.Printf("%v\n", row)
-	}
-	
+
 	return b.addChip(column)	
 }

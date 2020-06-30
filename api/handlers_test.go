@@ -15,9 +15,7 @@ type GameServiceMock struct {
 }
 
 func (mock *GameServiceMock) Turn(column int, gameID string) error {
-    fmt.Printf("column: %v gameId: %v", column, gameID)
     args := mock.Called(column, gameID)
-    
     return args.Error(0)
 }
 
@@ -34,7 +32,7 @@ func setup () {
 
 func TestTurnHandler(t *testing.T) {
     // Arrange
-    setup ()    
+    setup()    
     req, _ := http.NewRequest("", "/turn?column=4", nil)
     req.AddCookie(cookie)
     rr := httptest.NewRecorder()
@@ -42,4 +40,13 @@ func TestTurnHandler(t *testing.T) {
     h.ServeHTTP(rr, req)
     // Assert
     require.Equal(t, http.StatusOK, rr.Code, fmt.Sprintf("Wrong http status code returned"))
+    
+    // Arrange
+    req, _ = http.NewRequest("", "/turn?unknown=4", nil)
+    rr = httptest.NewRecorder()
+    // Act
+    h.ServeHTTP(rr, req)
+    // Assert
+    require.Equal(t, http.,rr.Code, fmt.Sprintf("should return http 400 if"))
+   
 }
