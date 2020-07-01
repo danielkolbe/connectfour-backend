@@ -38,11 +38,13 @@ func parseColumn(req *http.Request) (int, error) {
 	if nil != err {
 		return -1, err
 	}
-	var t struct {Column int}
+	t := struct {Column int}{-1}
 	err = json.Unmarshal(body, &t)
-	fmt.Printf("%+v", t)
 	if nil != err {
 		return -1, err
+	}
+	if 0 > t.Column {
+		return -1, fmt.Errorf("could not parse column or value of column < 0")
 	}
 	
 	return t.Column, nil

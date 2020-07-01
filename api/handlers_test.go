@@ -1,6 +1,8 @@
 package api
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -26,6 +28,7 @@ var cookie *http.Cookie
 func setup () {
     gameServiceMock := GameServiceMock{} 
     gameServiceMock.On("Turn", 4,"324234-555").Return(nil);
+    gameServiceMock.On("Turn", 3,"324234-555").Return(fmt.Errorf("error"));
     h = NewTurnHandler(&gameServiceMock)
     cookie = &http.Cookie{Name: "gameId", Value: "324234-555"}
 }
@@ -33,20 +36,46 @@ func setup () {
 func TestTurnHandler(t *testing.T) {
     // Arrange
     setup()    
-    req, _ := http.NewRequest("", "/turn?column=4", nil)
+    body := struct {Column int}{4}
+    bytesBody,_ := json.Marshal(body)
+    req, _ := http.NewRequest("", "/turn", bytes.NewReader(bytesBody))
     req.AddCookie(cookie)
     rr := httptest.NewRecorder()
     // Act
     h.ServeHTTP(rr, req)
     // Assert
-    require.Equal(t, http.StatusOK, rr.Code, fmt.Sprintf("Wrong http status code returned"))
+    require.Equal(t, http.StatusOK, rr.Code, fmt.Sprintf("should return http 200 if request is valid"))
     
     // Arrange
-    req, _ = http.NewRequest("", "/turn?unknown=4", nil)
+    body.Column = -1
+    bytesBody,_ = json.Marshal(body)
+    req, _ = http.NewRequest("", "/turn", bytes.NewReader(bytesBody))
+    req.AddCookie(cookie)
     rr = httptest.NewRecorder()
     // Act
     h.ServeHTTP(rr, req)
     // Assert
-    require.Equal(t, http.,rr.Code, fmt.Sprintf("should return http 400 if"))
-   
+    require.Equal(t, http.StatusBadRequest, rr.Code, fmt.Sprintf("should return http 400 if column number is negative"))
+
+    // Arrange
+    wrongBody := struct {Unknown int}{4}
+    bytesBody,_ = json.Marshal(wrongBody)
+    req, _ = http.NewRequest("", "/turn", bytes.NewReader(bytesBody))
+    req.AddCookie(cookie)
+    rr = httptest.NewRecorder()
+    // Act
+    h.ServeHTTP(rr, req)
+    // Assert
+    require.Equal(t, http.StatusBadRequest, rr.Code, fmt.Sprintf("should return http 400 if body does not contain column field"))
+
+    // Arrange
+    body.Column = 3
+    bytesBody,_ = json.Marshal(body)
+    req, _ = http.NewRequest("", "/turn", bytes.NewReader(bytesBody))
+    req.AddCookie(cookie)
+    rr = httptest.NewRecorder()
+    // Act
+    h.ServeHTTP(rr, req)
+    // Assert
+    require.Equal(t, http.StatusBadRequest, rr.Code, fmt.Sprintf("should return http 400 if error if game service returns error"))
 }
