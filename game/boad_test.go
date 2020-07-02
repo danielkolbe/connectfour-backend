@@ -8,7 +8,7 @@ import (
 
 func TestNewBoard(t *testing.T) {
 	// Arrange
-	b := NewBoard()
+	b := newBoard()
 	for i, row := range b.fields {
 		for j, color := range row {
 			// Assert
@@ -17,7 +17,7 @@ func TestNewBoard(t *testing.T) {
 	}
 }
 func TestErrorHandlingFullColumn(t *testing.T) {
-	b := NewBoard()
+	b := newBoard()
 	// Fill column 0
 	for i:=0 ; i < nRows; i++ {
 		error := b.addChip(0)
@@ -29,7 +29,7 @@ func TestErrorHandlingFullColumn(t *testing.T) {
 }
 func TestAddChip(t *testing.T) {
 	// Arrange
-	b := NewBoard()
+	b := newBoard()
 	// Act
 	b.addChip(4)
 	b.addChip(4)
@@ -40,7 +40,7 @@ func TestAddChip(t *testing.T) {
 
 func TestNextColor(t *testing.T) {
 	// Arrange
-	b := NewBoard()
+	b := newBoard()
 
 	// Assert
 	require.Equal(t, red, b.nextColor, fmt.Sprintf("Next color must be red but was %v", b.nextColor))

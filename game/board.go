@@ -4,11 +4,15 @@ import (
 	"fmt"
 )
 
-type color int
+
+// board represents a connect four game board and its current state
+// (all added chips and the color of the next chip) .
 type board struct {
 	fields    [nRows][nCol]color
 	nextColor color
 }
+
+type color int
 
 const nRows int = 6
 const nCol int = 7
@@ -26,10 +30,15 @@ func (c color) String() string {
 	return []string{"none", "blue", "red"}[c]
 }
 
-func NewBoard() *board {
+// newBoard returns a new board instance. 
+// The nextColor field will be preset to red
+func newBoard() *board {
 	return &board{fields: [nRows][nCol]color{}, nextColor: red}
 }
 
+// addChip adds a new chip to the board inserting
+// it at the specified column. If the column is
+// full or out of bounds an error will be returned. 
 func (b *board) addChip(column int) error {
 
 	if none != b.fields[0][column] {

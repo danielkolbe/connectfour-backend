@@ -21,16 +21,16 @@ func (mock *GameServiceMock) Turn(column int, gameID string) error {
     return args.Error(0)
 }
 
-var csSwap game.GameService
-var h TurnHandler 
+var csSwap game.Service
+var h turnHandler 
 var cookie *http.Cookie
 
 func setup () {
     gameServiceMock := GameServiceMock{} 
     gameServiceMock.On("Turn", 4,"324234-555").Return(nil);
     gameServiceMock.On("Turn", 3,"324234-555").Return(fmt.Errorf("error"));
-    h = NewTurnHandler(&gameServiceMock)
-    cookie = &http.Cookie{Name: "gameId", Value: "324234-555"}
+    h = newTurnHandler(&gameServiceMock)
+    cookie = &http.Cookie{Name: "gameID", Value: "324234-555"}
 }
 
 func TestTurnHandler(t *testing.T) {
