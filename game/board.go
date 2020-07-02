@@ -41,6 +41,10 @@ func newBoard() *board {
 // full or out of bounds an error will be returned. 
 func (b *board) addChip(column int) error {
 
+	if nCol-1 < column || 0 > column {
+		return fmt.Errorf("column %v is out of bounds: 0-%v", column, nCol-1)
+	}
+
 	if none != b.fields[0][column] {
 		return fmt.Errorf("column %v is full", column)
 	}

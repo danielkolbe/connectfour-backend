@@ -31,11 +31,26 @@ func TestAddChip(t *testing.T) {
 	// Arrange
 	b := newBoard()
 	// Act
-	b.addChip(4)
-	b.addChip(4)
+	err := b.addChip(4)
 	// Assert
+	require.Equal(t, nil, err, fmt.Sprintf("Expected error to be nil but was: %v", err))
 	require.Equal(t, red, b.fields[5][4], fmt.Sprintf("Color of field 5,4 of the board should be red but was %v", b.fields[5][4]))
+
+	// Act
+	err = b.addChip(4)
+	// Assert
+	require.Equal(t, nil, err, fmt.Sprintf("Expected error to be nil but was: %v", err))
 	require.Equal(t, blue, b.fields[4][4], fmt.Sprintf("Color of field 4,4 of the board should be blue but was %v", b.fields[4][4]))
+
+	// Act
+	err = b.addChip(nCol)
+	// Assert
+	require.NotEqual(t, nil, err, fmt.Sprintf("Should return an error if column number exceeds upper limit"))
+
+	// Act
+	err = b.addChip(-1)
+	// Assert
+	require.NotEqual(t, nil, err, fmt.Sprintf("Should return an error if column number is negative"))
 }
 
 func TestNextColor(t *testing.T) {
