@@ -1,4 +1,4 @@
-module github.com/danielkolbe/connectfour
+module github.com/danielkolbe/boardgames
 
 go 1.14
 

@@ -3,8 +3,8 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/danielkolbe/connectfour/game"
-	 "github.com/danielkolbe/connectfour/app/logger"
+	"github.com/danielkolbe/boardgames/game"
+	"github.com/danielkolbe/boardgames/app/logger"
 	"github.com/satori/go.uuid"
 	"io/ioutil"
 	"net/http"

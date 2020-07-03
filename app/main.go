@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/danielkolbe/connectfour/app/logger"
+	"github.com/danielkolbe/boardgames/app/logger"
 	"net/http"
-	"github.com/danielkolbe/connectfour/api"
+	"github.com/danielkolbe/boardgames/api"
 )
 
 func main() {
