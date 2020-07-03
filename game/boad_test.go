@@ -1,9 +1,9 @@
-package game;
+package game
 
 import (
 	"fmt"
-	"testing"
 	"github.com/stretchr/testify/require"
+	"testing"
 )
 
 func TestNewBoard(t *testing.T) {
@@ -12,14 +12,14 @@ func TestNewBoard(t *testing.T) {
 	for i, row := range b.fields {
 		for j, color := range row {
 			// Assert
-			require.Equal(t, color, none, fmt.Sprintf("A newly created board should be blank but the color of field %v,%v was %v", i, j, color)) 
+			require.Equal(t, color, none, fmt.Sprintf("A newly created board should be blank but the color of field %v,%v was %v", i, j, color))
 		}
 	}
 }
 func TestErrorHandlingFullColumn(t *testing.T) {
 	b := newBoard()
 	// Fill column 0
-	for i:=0 ; i < nRows; i++ {
+	for i := 0; i < nRows; i++ {
 		error := b.addChip(0)
 		require.Equal(t, nil, error, fmt.Sprintf("Error should be nil but was: `%v`.", error))
 	}
@@ -59,16 +59,16 @@ func TestNextColor(t *testing.T) {
 
 	// Assert
 	require.Equal(t, red, b.nextColor, fmt.Sprintf("Next color must be red but was %v", b.nextColor))
-	
+
 	// Act & Assert
 	b.addChip(4)
 	require.Equal(t, blue, b.nextColor, fmt.Sprintf("Next color must be blue but was %v", b.nextColor))
-	
+
 	// Act & Assert
 	b.addChip(3)
-	
+
 	require.Equal(t, red, b.nextColor, fmt.Sprintf("Next color must be red but was %v", b.nextColor))
 	// Act & Assert
 	b.addChip(3)
 	require.Equal(t, blue, b.nextColor, fmt.Sprintf("Next color must be blue but was %v", b.nextColor))
-}		
+}

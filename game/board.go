@@ -4,7 +4,6 @@ import (
 	"fmt"
 )
 
-
 // board represents a connect four game board and its current state
 // (all added chips and the color of the next chip) .
 type board struct {

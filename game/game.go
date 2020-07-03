@@ -3,7 +3,7 @@ package game
 var gameDb = map[string]*board{}
 
 // CFour implements the game.GameService interface.
-type CFour struct {} 
+type CFour struct{}
 
 // Service provides a collection of function
 // that can perform actions on a game.board.
@@ -24,5 +24,5 @@ func (c CFour) Turn(column int, gameID string) error {
 		gameDb[gameID] = b
 	}
 
-	return b.addChip(column)	
+	return b.addChip(column)
 }
