@@ -4,11 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/danielkolbe/connectfour/game"
+	 "github.com/danielkolbe/connectfour/app/logger"
 	"github.com/satori/go.uuid"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
+
 
 // turnHandler implements the http.Handler interface.
 type turnHandler struct {
@@ -33,13 +34,14 @@ func (h turnHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	gameID := gameID(w, req)
 	c, err := parseColumn(req)
 	if nil != err {
-		log.Print(err)
+		logger.Logger.Error(err)
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprint(w, "Please provide a query parameter 'column' as integer greater or equal 0")
 		return
 	}
-	log.Printf("Handle request: %v", c)
-	if nil != h.gameService.Turn(c, gameID) {
+	logger.Logger.Debugf("Adding next chip to column %v for game %v", c, gameID)
+	if err := h.gameService.Turn(c, gameID);  nil != err {
+		logger.Logger.Error(err)
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprint(w, err)
 	}
@@ -87,8 +89,8 @@ func panicRecover(h http.Handler) http.Handler {
 		defer func() {
 			r := recover()
 			if r != nil {
-				log.Print(r)
-				http.Error(w, fmt.Errorf("Well that's embarrassing").Error(), http.StatusInternalServerError)
+				logger.Logger.Error(r)
+				http.Error(w, fmt.Errorf("well that's embarrassing").Error(), http.StatusInternalServerError)
 			}
 		}()
 		h.ServeHTTP(w, req)
