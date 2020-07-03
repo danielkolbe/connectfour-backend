@@ -22,13 +22,14 @@ func (mock *GameServiceMock) Turn(column int, gameID string) error {
 }
 
 var csSwap game.Service
-var h turnHandler 
+var h http.Handler
 var cookie *http.Cookie
 
 func setup () {
     gameServiceMock := GameServiceMock{} 
     gameServiceMock.On("Turn", 4,"324234-555").Return(nil);
     gameServiceMock.On("Turn", 3,"324234-555").Return(fmt.Errorf("error"));
+    gameServiceMock.On("Turn", 2,"324234-555").Panic("panic!")
     h = newTurnHandler(&gameServiceMock)
     cookie = &http.Cookie{Name: "gameID", Value: "324234-555"}
 }
@@ -78,4 +79,15 @@ func TestTurnHandler(t *testing.T) {
     h.ServeHTTP(rr, req)
     // Assert
     require.Equal(t, http.StatusBadRequest, rr.Code, fmt.Sprintf("should return http 400 if error if game service returns error"))
+
+     // Arrange
+     body.Column = 2
+     bytesBody,_ = json.Marshal(body)
+     req, _ = http.NewRequest("", "/turn", bytes.NewReader(bytesBody))
+     req.AddCookie(cookie)
+     rr = httptest.NewRecorder()
+     // Act
+     h.ServeHTTP(rr, req)
+     // Assert
+     require.Equal(t, http.StatusInternalServerError, rr.Code, fmt.Sprintf("should return http 500 in case of panic"))
 }

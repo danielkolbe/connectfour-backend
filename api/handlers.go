@@ -3,26 +3,29 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/danielkolbe/connectfour/game"
+	"github.com/satori/go.uuid"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"github.com/danielkolbe/connectfour/game"
-	"github.com/satori/go.uuid"
 )
 
-// turnHandler implements the http.Handler interface. 
+// turnHandler implements the http.Handler interface.
 type turnHandler struct {
 	gameService game.Service
 }
 
 // newTurnHandler returns a new turnHandler instance.
-func newTurnHandler(gameService game.Service) turnHandler {
-	return turnHandler{gameService}
+// If newTurnHandler is used, the returned handler will
+// be wrapped so that any panic that is escalated to the
+// handler will be turned into an http 500 response
+func newTurnHandler(gameService game.Service) http.Handler {
+	return panicRecover(turnHandler{gameService})
 }
 
-// ServerHTTP takes an incoming (POST) request which is requird to have
-// a body that can be unmarshalled to struct {column int}. 
-// Steps: 
+// ServerHTTP takes an incoming (POST) request which is required to have
+// a body that can be unmarshalled to struct {Column int}.
+// Steps:
 // 1) Extract gameID from cookie if present, else create and set cookie
 // 2) Parse column number from request
 // 3) Calls gameService.Turn with the column number
@@ -50,7 +53,7 @@ func parseColumn(req *http.Request) (int, error) {
 	if nil != err {
 		return -1, err
 	}
-	t := struct {Column int}{-1}
+	t := struct{ Column int }{-1}
 	err = json.Unmarshal(body, &t)
 	if nil != err {
 		return -1, err
@@ -58,11 +61,11 @@ func parseColumn(req *http.Request) (int, error) {
 	if 0 > t.Column {
 		return -1, fmt.Errorf("could not parse column or value of column < 0")
 	}
-	
+
 	return t.Column, nil
 }
 
-// gameID extracts the gameId from cookie if present, 
+// gameID extracts the gameId from cookie if present,
 // else create and write cookie to response writer
 func gameID(w http.ResponseWriter, req *http.Request) string {
 	c, err := req.Cookie("gameID")
@@ -75,4 +78,19 @@ func gameID(w http.ResponseWriter, req *http.Request) string {
 		http.SetCookie(w, c)
 	}
 	return c.Value
+}
+
+// panicRecover wraps an http.Handler instance so that any panic that
+// is escalated to the handler will be turned into an http 500 response
+func panicRecover(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		defer func() {
+			r := recover()
+			if r != nil {
+				log.Print(r)
+				http.Error(w, fmt.Errorf("Well that's embarrassing").Error(), http.StatusInternalServerError)
+			}
+		}()
+		h.ServeHTTP(w, req)
+	})
 }
