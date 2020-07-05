@@ -2,7 +2,7 @@ package api
 
 import (
 	"net/http"
-	"github.com/danielkolbe/boardgames/game"
+	"github.com/danielkolbe/connectfour/game"
 	"github.com/gorilla/mux"
 )
 
