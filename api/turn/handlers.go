@@ -1,4 +1,4 @@
-package api
+package turn
 
 import (
 	"encoding/json"
@@ -11,17 +11,17 @@ import (
 )
 
 
-// turnHandler implements the http.Handler interface.
-type turnHandler struct {
+// Handler implements the http.Handler interface.
+type Handler struct {
 	gameService game.Service
 }
 
-// newTurnHandler returns a new turnHandler instance.
-// If newTurnHandler is used, the returned handler will
+// NewHandler returns a new Handler instance.
+// If NewHandler is used, the returned handler will
 // be wrapped so that any panic that is escalated to the
 // handler will be turned into an http 500 response
-func newTurnHandler(gameService game.Service) http.Handler {
-	return panicRecover(turnHandler{gameService})
+func NewHandler(gameService game.Service) http.Handler {
+	return panicRecover(Handler{gameService})
 }
 
 // ServerHTTP takes an incoming (POST) request which is required to have
@@ -30,7 +30,7 @@ func newTurnHandler(gameService game.Service) http.Handler {
 // 1) Extract gameID from cookie if present, else create and set cookie
 // 2) Parse column number from request
 // 3) Calls gameService.Turn with the column number
-func (h turnHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	gameID := gameID(w, req)
 	c, err := parseColumn(req)
 	if nil != err {
