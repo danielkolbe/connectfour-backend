@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/danielkolbe/connectfour/app/logger"
+	"github.com/danielkolbe/connectfour/logger"
 	"net/http"
 	"github.com/danielkolbe/connectfour/api"
 )

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/danielkolbe/connectfour/game"
-	"github.com/danielkolbe/connectfour/app/logger"
+	"github.com/danielkolbe/connectfour/logger"
 	"github.com/satori/go.uuid"
 	"io/ioutil"
 	"net/http"
