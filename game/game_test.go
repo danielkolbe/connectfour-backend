@@ -49,4 +49,11 @@ func TestBoard(t *testing.T) {
 	b := c.Board("id_2")
 	require.Equal(t, *newBoard(), b, "should create a new board after requesting a non-existing board")
 	require.Equal(t, 1, len(*testGameDb.games), "size of game database should be increased by 1 after requesting a non-existing board")
+	// Act & Assert
+	b = c.Board("id_3")	
+	require.Equal(t, 2, len(*testGameDb.games), "size of game database should be increased by 1 after requesting a non-existing board")
+    // Act & Assert
+	gameDb["id_2"].addChip(0)
+	b = c.Board("id_2")	
+    require.Equal(t, red, b.fields[5][0], "should return the right board (the one with red chip added)")
 }
