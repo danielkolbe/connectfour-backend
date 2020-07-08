@@ -1,15 +1,15 @@
 package turn
 
 import (
-    "bytes"
+	"bytes"
 	"encoding/json"
 	"fmt"
-    "github.com/danielkolbe/connectfour/game"
-	"github.com/stretchr/testify/mock"
-	"github.com/stretchr/testify/require"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"github.com/stretchr/testify/mock"
+    "github.com/stretchr/testify/require"
+    "github.com/danielkolbe/connectfour/game"
 )
 
 type GameServiceMock struct {
@@ -21,12 +21,17 @@ func (mock *GameServiceMock) Turn(column int, gameID string) error {
     return args.Error(0)
 }
 
-var csSwap game.Service
+func (mock *GameServiceMock) Board(gameID string) game.Board {
+    fmt.Printf("Dummy method, please don't call")
+    return game.Board{}
+}
+
 var h http.Handler
 var cookie *http.Cookie
 
 func setup () {
     gameServiceMock := GameServiceMock{} 
+    fmt.Println(gameServiceMock.Board("sdfdf"))
     gameServiceMock.On("Turn", 4,"324234-555").Return(nil);
     gameServiceMock.On("Turn", 3,"324234-555").Return(fmt.Errorf("error"));
     gameServiceMock.On("Turn", 2,"324234-555").Panic("panic!")
@@ -34,7 +39,7 @@ func setup () {
     cookie = &http.Cookie{Name: "gameID", Value: "324234-555"}
 }
 
-func TestTurnHandler(t *testing.T) {
+func TestHandler(t *testing.T) {
     // Arrange
     setup()    
     body := struct {Column int}{4}

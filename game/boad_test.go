@@ -12,7 +12,7 @@ func TestNewBoard(t *testing.T) {
 	for i, row := range b.fields {
 		for j, color := range row {
 			// Assert
-			require.Equal(t, color, none, fmt.Sprintf("A newly created board should be blank but the color of field %v,%v was %v", i, j, color))
+			require.Equal(t, color, none, fmt.Sprintf("A newly created Board should be blank but the color of field %v,%v was %v", i, j, color))
 		}
 	}
 }
@@ -34,13 +34,13 @@ func TestAddChip(t *testing.T) {
 	err := b.addChip(4)
 	// Assert
 	require.Equal(t, nil, err, fmt.Sprintf("Expected error to be nil but was: %v", err))
-	require.Equal(t, red, b.fields[5][4], fmt.Sprintf("Color of field 5,4 of the board should be red but was %v", b.fields[5][4]))
+	require.Equal(t, red, b.fields[5][4], fmt.Sprintf("Color of field 5,4 of the Board should be red but was %v", b.fields[5][4]))
 
 	// Act
 	err = b.addChip(4)
 	// Assert
 	require.Equal(t, nil, err, fmt.Sprintf("Expected error to be nil but was: %v", err))
-	require.Equal(t, blue, b.fields[4][4], fmt.Sprintf("Color of field 4,4 of the board should be blue but was %v", b.fields[4][4]))
+	require.Equal(t, blue, b.fields[4][4], fmt.Sprintf("Color of field 4,4 of the Board should be blue but was %v", b.fields[4][4]))
 
 	// Act
 	err = b.addChip(nCol)
