@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"sync"
 )
 
 // Board represents a connect four game Board and its current state
@@ -9,6 +10,7 @@ import (
 type Board struct {
 	fields    [nRows][nCol]color
 	nextColor color
+	mutex sync.Mutex
 }
 
 type color int
@@ -39,6 +41,8 @@ func newBoard() *Board {
 // it at the specified column. If the column is
 // full or out of bounds an error will be returned. 
 func (b *Board) addChip(column int) error {
+	b.mutex.Lock()
+	defer b.mutex.Unlock()
 	if nCol-1 < column || 0 > column {
 		return fmt.Errorf("column %v is out of bounds: 0-%v", column, nCol-1)
 	}
