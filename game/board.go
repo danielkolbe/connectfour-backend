@@ -2,13 +2,14 @@ package game
 
 import (
 	"fmt"
+	"strings"
 	"sync"
 )
 
 // Board represents a connect four game Board and its current state
 // (all added chips and the color of the next chip) .
 type Board struct {
-	fields    [nRows][nCol]color
+	Fields    [nRows][nCol]color
 	nextColor color
 	mutex sync.Mutex
 }
@@ -24,17 +25,29 @@ const (
 	red
 )
 
+func (b Board) String() string {
+	var str strings.Builder
+	for row := 0; row < nRows; row++ {
+		for column := 0; column < nCol; column++ {
+			str.WriteString(b.Fields[row][column].String())
+			str.WriteString(" ")
+		}    
+		str.WriteString("\n")
+	}
+	return str.String()
+}
+
 func (c color) String() string {
 	if c > 2 || c < 0 {
 		return "Unknown"
 	}
-	return []string{"none", "blue", "red"}[c]
+	return []string{"n", "b", "r"}[c]
 }
 
 // newBoard returns a new Board instance.
 // The nextColor field will be preset to red
 func newBoard() *Board {
-	return &Board{fields: [nRows][nCol]color{}, nextColor: red}
+	return &Board{Fields: [nRows][nCol]color{}, nextColor: red}
 }
 
 // addChip adds a new chip to the Board inserting
@@ -46,12 +59,12 @@ func (b *Board) addChip(column int) error {
 	if nCol-1 < column || 0 > column {
 		return fmt.Errorf("column %v is out of bounds: 0-%v", column, nCol-1)
 	}
-	if none != b.fields[0][column] {
+	if none != b.Fields[0][column] {
 		return fmt.Errorf("column %v is full", column)
 	}
-	for row := len(b.fields) - 1; row >= 0; row-- {
-		if none == b.fields[row][column] {
-			b.fields[row][column] = b.nextColor
+	for row := len(b.Fields) - 1; row >= 0; row-- {
+		if none == b.Fields[row][column] {
+			b.Fields[row][column] = b.nextColor
 			break
 		}
 	}
