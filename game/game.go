@@ -2,7 +2,7 @@ package game
 
 var gameDb = map[string]*Board{}
 
-// CFour implements the game.GameService interface.
+// CFour implements the game.Service interface.
 type CFour struct{}
 
 // Service provides a collection of function

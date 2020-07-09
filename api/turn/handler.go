@@ -3,25 +3,24 @@ package turn
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/danielkolbe/connectfour/game"
-	"github.com/danielkolbe/connectfour/logger"
-	"github.com/satori/go.uuid"
 	"io/ioutil"
 	"net/http"
+	"github.com/danielkolbe/connectfour/game"
+	"github.com/danielkolbe/connectfour/logger"
 )
-
 
 // Handler implements the http.Handler interface.
 type Handler struct {
 	gameService game.Service
+	gameID func(w http.ResponseWriter, req *http.Request) string
 }
 
 // NewHandler returns a new Handler instance.
 // If NewHandler is used, the returned handler will
 // be wrapped so that any panic that is escalated to the
 // handler will be turned into an http 500 response
-func NewHandler(gameService game.Service) http.Handler {
-	return panicRecover(Handler{gameService})
+func NewHandler(gameService game.Service, gameID func(w http.ResponseWriter, req *http.Request) string) http.Handler {
+	return panicRecover(Handler{gameService, gameID})
 }
 
 // ServerHTTP takes an incoming (POST) request which is required to have
@@ -31,7 +30,7 @@ func NewHandler(gameService game.Service) http.Handler {
 // 2) Parse column number from request
 // 3) Calls gameService.Turn with the column number
 func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	gameID := gameID(w, req)
+	gameID := h.gameID(w, req)
 	c, err := parseColumn(req)
 	if nil != err {
 		logger.Logger.Error(err)
@@ -65,21 +64,6 @@ func parseColumn(req *http.Request) (int, error) {
 	}
 
 	return t.Column, nil
-}
-
-// gameID extracts the gameId from cookie if present,
-// else create and write cookie to response writer
-func gameID(w http.ResponseWriter, req *http.Request) string {
-	c, err := req.Cookie("gameID")
-	if err != nil {
-		sID := uuid.NewV4()
-		c = &http.Cookie{
-			Name:  "gameID",
-			Value: sID.String(),
-		}
-		http.SetCookie(w, c)
-	}
-	return c.Value
 }
 
 // panicRecover wraps an http.Handler instance so that any panic that

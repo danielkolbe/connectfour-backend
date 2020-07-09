@@ -22,7 +22,7 @@ func (mock *GameServiceMock) Turn(column int, gameID string) error {
 }
 
 func (mock *GameServiceMock) Board(gameID string) game.Board {
-    fmt.Printf("Dummy method, please don't call")
+    fmt.Println("Dummy method, please don't call")
     return game.Board{}
 }
 
@@ -30,12 +30,16 @@ var h http.Handler
 var cookie *http.Cookie
 
 func setup () {
-    gameServiceMock := GameServiceMock{} 
+    gameServiceMock := GameServiceMock{}
+    gameID := func(w http.ResponseWriter, req *http.Request) string {
+        c, _ := req.Cookie("gameID")
+        return c.Value
+    }
     fmt.Println(gameServiceMock.Board("sdfdf"))
     gameServiceMock.On("Turn", 4,"324234-555").Return(nil);
     gameServiceMock.On("Turn", 3,"324234-555").Return(fmt.Errorf("error"));
     gameServiceMock.On("Turn", 2,"324234-555").Panic("panic!")
-    h = NewHandler(&gameServiceMock)
+    h = NewHandler(&gameServiceMock, gameID)
     cookie = &http.Cookie{Name: "gameID", Value: "324234-555"}
 }
 
