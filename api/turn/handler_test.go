@@ -35,7 +35,6 @@ func setup () {
         c, _ := req.Cookie("gameID")
         return c.Value
     }
-    fmt.Println(gameServiceMock.Board("sdfdf"))
     gameServiceMock.On("Turn", 4,"324234-555").Return(nil);
     gameServiceMock.On("Turn", 3,"324234-555").Return(fmt.Errorf("error"));
     gameServiceMock.On("Turn", 2,"324234-555").Panic("panic!")
@@ -48,7 +47,7 @@ func TestHandler(t *testing.T) {
     setup()    
     body := struct {Column int}{4}
     bytesBody,_ := json.Marshal(body)
-    req, _ := http.NewRequest("", "/turn", bytes.NewReader(bytesBody))
+    req, _ := http.NewRequest("", "", bytes.NewReader(bytesBody))
     req.AddCookie(cookie)
     rr := httptest.NewRecorder()
     // Act
@@ -59,7 +58,7 @@ func TestHandler(t *testing.T) {
     // Arrange
     body.Column = -1
     bytesBody,_ = json.Marshal(body)
-    req, _ = http.NewRequest("", "/turn", bytes.NewReader(bytesBody))
+    req, _ = http.NewRequest("", "", bytes.NewReader(bytesBody))
     req.AddCookie(cookie)
     rr = httptest.NewRecorder()
     // Act
@@ -70,7 +69,7 @@ func TestHandler(t *testing.T) {
     // Arrange
     wrongBody := struct {Unknown int}{4}
     bytesBody,_ = json.Marshal(wrongBody)
-    req, _ = http.NewRequest("", "/turn", bytes.NewReader(bytesBody))
+    req, _ = http.NewRequest("", "", bytes.NewReader(bytesBody))
     req.AddCookie(cookie)
     rr = httptest.NewRecorder()
     // Act
@@ -81,7 +80,7 @@ func TestHandler(t *testing.T) {
     // Arrange
     body.Column = 3
     bytesBody,_ = json.Marshal(body)
-    req, _ = http.NewRequest("", "/turn", bytes.NewReader(bytesBody))
+    req, _ = http.NewRequest("", "", bytes.NewReader(bytesBody))
     req.AddCookie(cookie)
     rr = httptest.NewRecorder()
     // Act
@@ -92,7 +91,7 @@ func TestHandler(t *testing.T) {
      // Arrange
      body.Column = 2
      bytesBody,_ = json.Marshal(body)
-     req, _ = http.NewRequest("", "/turn", bytes.NewReader(bytesBody))
+     req, _ = http.NewRequest("", "", bytes.NewReader(bytesBody))
      req.AddCookie(cookie)
      rr = httptest.NewRecorder()
      // Act
