@@ -43,7 +43,7 @@ func TestAddChip(t *testing.T) {
 	require.Equal(t, blue, b.Fields[4][4], fmt.Sprintf("Color of field 4,4 of the Board should be blue but was %v", b.Fields[4][4]))
 
 	// Act
-	err = b.addChip(nCol)
+	err = b.addChip(nCols)
 	// Assert
 	require.NotEqual(t, nil, err, fmt.Sprintf("Should return an error if column number exceeds upper limit"))
 

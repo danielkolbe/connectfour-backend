@@ -9,7 +9,7 @@ import (
 // Board represents a connect four game Board and its current state
 // (all added chips and the color of the next chip) .
 type Board struct {
-	Fields    [nRows][nCol]color
+	Fields    [nRows][nCols]color
 	nextColor color
 	mutex sync.Mutex
 }
@@ -17,7 +17,7 @@ type Board struct {
 type color int
 
 const nRows int = 6
-const nCol int = 7
+const nCols int = 7
 
 const (
 	none color = iota
@@ -28,7 +28,7 @@ const (
 func (b Board) String() string {
 	var str strings.Builder
 	for row := 0; row < nRows; row++ {
-		for column := 0; column < nCol; column++ {
+		for column := 0; column < nCols; column++ {
 			str.WriteString(b.Fields[row][column].String())
 			str.WriteString(" ")
 		}    
@@ -44,10 +44,10 @@ func (c color) String() string {
 	return []string{"n", "b", "r"}[c]
 }
 
-// newBoard returns a new Board instance.
-// The nextColor field will be preset to red
+// newBoard returns a pointer to a new Board instance.
+// The nextColor field will be pre-set to red.
 func newBoard() *Board {
-	return &Board{Fields: [nRows][nCol]color{}, nextColor: red}
+	return &Board{Fields: [nRows][nCols]color{}, nextColor: red}
 }
 
 // addChip adds a new chip to the Board inserting
@@ -56,8 +56,8 @@ func newBoard() *Board {
 func (b *Board) addChip(column int) error {
 	b.mutex.Lock()
 	defer b.mutex.Unlock()
-	if nCol-1 < column || 0 > column {
-		return fmt.Errorf("column %v is out of bounds: 0-%v", column, nCol-1)
+	if nCols-1 < column || 0 > column {
+		return fmt.Errorf("column %v is out of bounds: 0-%v", column, nCols-1)
 	}
 	if none != b.Fields[0][column] {
 		return fmt.Errorf("column %v is full", column)
