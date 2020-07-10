@@ -19,11 +19,12 @@ func TestGameID(t *testing.T) {
 	id := gameID(rr, req)
 	// Assert
 	require.Equal(t, "324234-555", id, "Should return gameID extracted from cookie.")
+	
 	// Arrange 
 	req, _ = http.NewRequest("", "", nil)
 	r := regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$")
 	// Act
 	id = gameID(rr, req)
 	// Assert
-	require.Equal(t, true, r.MatchString(id), "Should return a genrated uuid if no cookie given.")
+	require.Equal(t, true, r.MatchString(id), "Should return a generated uuid if no cookie given.")
 }

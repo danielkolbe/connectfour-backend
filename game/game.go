@@ -43,7 +43,7 @@ func (c CFour) Board(gameID string) Board {
 		b = newBoard()
 		gameDb[gameID] = b
 	}
-
+	
 	return *b
 }
 

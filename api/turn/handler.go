@@ -32,6 +32,7 @@ func NewHandler(gameService game.Service, gameID func(w http.ResponseWriter, req
 func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	gameID := h.gameID(w, req)
 	c, err := parseColumn(req)
+	logger.Logger.Debugf("Column param parsed from request (with gameID %v): %v", gameID, c)
 	if nil != err {
 		logger.Logger.Error(err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -62,7 +63,7 @@ func parseColumn(req *http.Request) (int, error) {
 	if 0 > t.Column {
 		return -1, fmt.Errorf("could not parse column or value of column < 0")
 	}
-
+	
 	return t.Column, nil
 }
 

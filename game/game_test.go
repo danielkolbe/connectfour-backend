@@ -54,5 +54,5 @@ func TestBoard(t *testing.T) {
     // Act & Assert
 	gameDb["id_2"].addChip(0)
 	b = c.Board("id_2")	
-    require.Equal(t, red, b.fields[5][0], "should return the right board (the one with red chip added)")
+    require.Equal(t, red, b.Fields[5][0], "should return the right board (the one with red chip added)")
 }
