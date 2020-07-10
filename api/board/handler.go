@@ -22,7 +22,13 @@ func NewHandler(gameService game.Service,  gameID func(w http.ResponseWriter, re
 	return panicRecover(Handler{gameService, gameID})
 }
 
-// ServerHTTP takes an incoming (GET) request which is required to have
+// ServerHTTP takes an incoming (GET) request for a game existing
+// game board. Reads the gameID from cookie. If the gameID is not present
+// or does not match an existing game a new board will be returned.
+// Steps:
+// 1) Extract gameID from cookie if present, else create and set cookie
+// 2) Obtain existing or new board
+// 3) Return board as json if content-type is application/json, board as text else
 func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	gameID := h.gameID(w, req)
 	logger.Logger.Debugf("Retrieving current board for game %v", gameID)
