@@ -30,6 +30,22 @@ func TestRouter(t *testing.T) {
 	
 	// Arrange
 	rr = httptest.NewRecorder()
+	req, _ = http.NewRequest("GET", "/board", nil)	
+	// Act
+	NewRouter().ServeHTTP(rr, req)
+	// Assert
+	require.Equal(t, http.StatusOK, rr.Code, "should return http status 200" )
+
+	// Arrange
+	rr = httptest.NewRecorder()
+	req, _ = http.NewRequest("POST", "/board", nil)	
+	// Act
+	NewRouter().ServeHTTP(rr, req)
+	// Assert
+	require.Equal(t, http.StatusMethodNotAllowed, rr.Code, "should return http status 405 if method not equal to GET" )
+
+	// Arrange
+	rr = httptest.NewRecorder()
 	req, _ = http.NewRequest("POST", "/unknown", nil)
 	// Act
 	NewRouter().ServeHTTP(rr, req)

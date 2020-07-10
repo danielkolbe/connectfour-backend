@@ -22,6 +22,7 @@ func TestGameID(t *testing.T) {
 	
 	// Arrange 
 	req, _ = http.NewRequest("", "", nil)
+	// Regex for uuid
 	r := regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$")
 	// Act
 	id = gameID(rr, req)
