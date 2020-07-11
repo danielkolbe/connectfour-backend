@@ -14,7 +14,74 @@ func TestHasFour(t *testing.T) {
 	require.Equal(t, none, hasFour([]color{red, red, red, none, red}), "should return none")
 }
 
-func TestWinH(t *testing.T) {
+func TestWinDiagonal(t *testing.T) {
+	// Arrange
+	b := Board{Fields: [nRows][nCols]color{
+		{none, none, none, blue, none, none, none},
+		{none, none, none, none, blue, none, none},
+		{none, none, none, none, none, blue, none},
+		{none, none, none, none, none, none, blue},
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+	},
+	}
+	// Act & Assert
+	require.Equal(t, blue, winDiagonal(&b), "should return blue")
+
+	// Arrange
+	b = Board{Fields: [nRows][nCols]color{
+		{none, none, none, blue, none, none, none},
+		{none, red, none, none, blue, none, none},
+		{none, none, red, none, none, blue, none},
+		{none, none, none, red, none, none, none},
+		{none, none, none, none, red, none, none},
+		{none, none, none, none, none, none, none},
+	},
+	}
+	// Act & Assert
+	require.Equal(t, red, winDiagonal(&b), "should return red")
+
+	// Arrange
+	b = Board{Fields: [nRows][nCols]color{
+		{none, none, none, blue, none, none, none},
+		{none, none, none, none, blue, none, none},
+		{none, none, red, none, none, blue, none},
+		{none, none, none, red, none, none, none},
+		{none, none, none, none, red, none, none},
+		{none, none, none, none, none, red, none},
+	},
+	}
+	// Act & Assert
+	require.Equal(t, red, winDiagonal(&b), "should return red")
+
+	// Arrange
+	b = Board{Fields: [nRows][nCols]color{
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+		{blue, none, red, none, none, none, none},
+		{none, blue, none, red, none, none, none},
+		{none, none, blue, none, red, none, none},
+		{none, none, none, blue, none, none, none},
+	},
+	}
+	// Act & Assert
+	require.Equal(t, blue, winDiagonal(&b), "should return blue")
+
+	// Arrange
+	b = Board{Fields: [nRows][nCols]color{
+		{none, none, none, blue, blue, blue, blue},
+		{red, none, none, none, blue, none, none},
+		{red, none, red, none, none, blue, none},
+		{red, blue, none, red, none, none, none},
+		{red, none, blue, none, red, none, none},
+		{red, none, none, blue, none, none, none},
+	},
+	}
+	// Act & Assert
+	require.Equal(t, none, winDiagonal(&b), "should return none")
+}
+
+func TestWinHorizontal(t *testing.T) {
 	// Arrange
 	b := Board{Fields: [nRows][nCols]color{
 		{none, none, none, none, none, none, none},
@@ -46,10 +113,10 @@ func TestWinH(t *testing.T) {
 
 	// Arrange
 	b = Board{Fields: [nRows][nCols]color{
-		{none, red, none, none, none, none, none},
-		{none, red, none, none, none, none, none},
-		{none, red, none, none, none, none, none},
-		{none, red, none, none, none, none, none},
+		{none, red, none, blue, none, none, none},
+		{none, red, none, none, blue, none, none},
+		{none, red, none, none, none, blue, none},
+		{none, red, none, none, none, none,  blue},
 		{none, red, blue, none, blue, none, none},
 		{none, red, red, red, blue, red, none},
 	},
@@ -100,10 +167,10 @@ func TestWinVertical(t *testing.T) {
 
 	// Arrange
 	b = Board{Fields: [nRows][nCols]color{
-		{none, none, none, none, none, none, none},
-		{none, none, none, none, none, none, none},
-		{none, red, none, none, none, none, none},
-		{none, red, none, none, none, none, none},
+		{none, none, none,  blue, none, none, none},
+		{none, none, none, none,  blue, none, none},
+		{none, red, none, none, none,  blue, none},
+		{none, red, none, none, none, none,  blue},
 		{none, red, blue, none, blue, none, none},
 		{none, red, red, red, blue, red, none},
 	},

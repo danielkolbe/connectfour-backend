@@ -1,7 +1,7 @@
 package game
 
 // winH returns a color if four contiguous fields of the
-// board with the same color in a horizontal line exist. It returns none otherwise.
+// board of that color in a horizontal line exist. It returns none otherwise.
 // If this condition applies for both colors one of both will be returned.
 func winHorizontal(b *Board) color {
 	color := none
@@ -15,7 +15,7 @@ func winHorizontal(b *Board) color {
 }
 
 // winVertical returns a color if four contiguous fields of the
-// board with the same color in a vertical line exist. It returns none otherwise. 
+// board of that color in a vertical line exist. It returns none otherwise. 
 // If this condition applies for both colors one of both will be returned.
 func winVertical(b *Board) color {
 	color := none
@@ -27,6 +27,28 @@ func winVertical(b *Board) color {
 	}
 	return color
 }
+
+// winDiagonal returns a color if four contiguous fields of the
+// board of that color in a vertical line exist. It returns none otherwise. 
+// If this condition applies for both colors one of both will be returned.
+func winDiagonal(b *Board) color {
+	color := none
+	for y := 0; y <= len(b.Fields)-4; y++ {
+		color = hasFour(diagonal(&b.Fields, y, 0))
+		if none != color {
+			return color
+		}
+	}
+	for x := 0; x <= len(b.Fields[0])-4; x++ {
+		color = hasFour(diagonal(&b.Fields, 0, x))
+		if none != color {
+			return color
+		}
+	}
+	
+	return none
+}
+
 
 // hasFour is the working horse of the win detection algorithm.
 // It returns the (first) color (red or blue) that is value of
