@@ -1,6 +1,24 @@
 package game
 
-// winH returns a color if four contiguous fields of the
+// win returns a color if four contiguous fields of the given
+// board of that color in a horizontal, vertical or diagonal line exist. 
+// It returns none otherwise.
+// If this condition applies for both colors one of both will be returned.
+func win(b *Board) color {
+	if color := winHorizontal(b); none != color {
+		return color
+	}
+	if color := winVertical(b); none != color {
+		return color
+	}
+	if color := winDiagonal(b); none != color {
+		return color
+	}
+
+	return none
+}
+
+// winH returns a color if four contiguous fields of the given
 // board of that color in a horizontal line exist. It returns none otherwise.
 // If this condition applies for both colors one of both will be returned.
 func winHorizontal(b *Board) color {
@@ -15,7 +33,7 @@ func winHorizontal(b *Board) color {
 }
 
 // winVertical returns a color if four contiguous fields of the
-// board of that color in a vertical line exist. It returns none otherwise. 
+// board of that color in a vertical line exist. It returns none otherwise.
 // If this condition applies for both colors one of both will be returned.
 func winVertical(b *Board) color {
 	color := none
@@ -29,7 +47,7 @@ func winVertical(b *Board) color {
 }
 
 // winDiagonal returns a color if four contiguous fields of the
-// board of that color in a vertical line exist. It returns none otherwise. 
+// board of that color in a vertical line exist. It returns none otherwise.
 // If this condition applies for both colors one of both will be returned.
 func winDiagonal(b *Board) color {
 	color := none
@@ -45,10 +63,9 @@ func winDiagonal(b *Board) color {
 			return color
 		}
 	}
-	
+
 	return none
 }
-
 
 // hasFour is the working horse of the win detection algorithm.
 // It returns the (first) color (red or blue) that is value of
@@ -72,7 +89,7 @@ func hasFour(c []color) color {
 }
 
 // column returns the column with given index of the given array
-func column(fields *[nRows][nCols] color, index int) []color {
+func column(fields *[nRows][nCols]color, index int) []color {
 	column := make([]color, nRows)
 	for _, row := range fields {
 		column = append(column, row[index])
@@ -81,13 +98,13 @@ func column(fields *[nRows][nCols] color, index int) []color {
 }
 
 // diagonal returns the diagonal of the given array starting at (row, column)
-func diagonal(fields *[nRows][nCols] color, row int, column int) []color {
+func diagonal(fields *[nRows][nCols]color, row int, column int) []color {
 	diagonal := make([]color, 0)
 	x := column
 	for y := row; y < len(fields); y++ {
 		if x < len(fields[0]) {
 			diagonal = append(diagonal, fields[y][x])
-		} 
+		}
 		x++
 	}
 	return diagonal
