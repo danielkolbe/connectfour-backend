@@ -26,7 +26,10 @@ func TestWinH(t *testing.T) {
 	},
 	}
 	// Act & Assert
-	require.Equal(t, red, winH(&b), "should return red")
+	require.Equal(t, red, winHorizontal(&b), "should return red")
+
+	// Act & Assert
+	require.Equal(t, red, winHorizontal(&b), "should return red")
 
 	// Arrange
 	b = Board{Fields: [nRows][nCols]color{
@@ -39,7 +42,7 @@ func TestWinH(t *testing.T) {
 	},
 	}
 	// Act & Assert
-	require.Equal(t, blue, winH(&b), "should return blue")
+	require.Equal(t, blue, winHorizontal(&b), "should return blue")
 
 	// Arrange
 	b = Board{Fields: [nRows][nCols]color{
@@ -52,5 +55,101 @@ func TestWinH(t *testing.T) {
 	},
 	}
 	// Act & Assert
-	require.Equal(t, none, winH(&b), "should return none")
+	require.Equal(t, none, winHorizontal(&b), "should return none")
+}
+
+func TestWinVertical(t *testing.T) {
+	// Arrange
+	b := Board{Fields: [nRows][nCols]color{
+		{none, none, none, none, none, none, none},
+		{none, blue, none, none, none, none, none},
+		{none, blue, none, none, none, none, none},
+		{none, blue, none, none, none, none, none},
+		{none, blue, none, none, none, none, none},
+		{none, red, red, red, red, none, none},
+	},
+	}
+	// Act & Assert
+	require.Equal(t, blue, winVertical(&b), "should return blue")
+
+	// Arrange
+	b = Board{Fields: [nRows][nCols]color{
+		{none, none, none, none, none, none, none},
+		{blue, none, none, none, none, none, none},
+		{blue, none, none, none, none, none, none},
+		{blue, none, none, none, none, none, none},
+		{blue, none, none, none, none, none, none},
+		{red, red, red, red, red, none, none},
+	},
+	}
+	// Act & Assert
+	require.Equal(t, blue, winVertical(&b), "should return blue")
+
+	// Arrange
+	b = Board{Fields: [nRows][nCols]color{
+		{none, none, none, none, none, none, blue},
+		{none, none, none, none, none, none, blue},
+		{none, none, none, none, none, none, blue},
+		{none, none, none, none, none, none, blue},
+		{none, none, none, none, none, none, blue},
+		{none, red, red, red, red, none, red},
+	},
+	}
+	// Act & Assert
+	require.Equal(t, blue, winVertical(&b), "should return blue")
+
+	// Arrange
+	b = Board{Fields: [nRows][nCols]color{
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+		{none, red, none, none, none, none, none},
+		{none, red, none, none, none, none, none},
+		{none, red, blue, none, blue, none, none},
+		{none, red, red, red, blue, red, none},
+	},
+	}
+	// Act & Assert
+	require.Equal(t, red, winVertical(&b), "should return red")
+
+	// Arrange
+	b = Board{Fields: [nRows][nCols]color{
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+		{none, blue, none, none, none, none, none},
+		{none, red, none, none, none, none, none},
+		{none, red, blue, none, blue, none, none},
+		{none, red, red, red, red, none, none},
+	},
+	}
+	// Act & Assert
+	require.Equal(t, none, winVertical(&b), "should return none")
+}
+
+func TestDiagonal(t *testing.T) {
+	// Arrange
+	b := Board{Fields: [nRows][nCols]color{
+		{none, none, none, blue, none, red, red},
+		{none, blue, none, none, blue, none, none},
+		{none, blue, none, red, none, red, blue},
+		{none, blue, none, none, none, none, red},
+		{none, blue, none, none, none, red, none},
+		{none, red,  red,  red,  red, blue,  none},
+	},
+	}
+	// Act & Assert 
+	require.Equal(t, []color{none, blue, none, none, none, blue}, diagonal(&b.Fields, 0, 0), "should return the diagonal with given starting point")
+	require.Equal(t, []color{none, blue, none, none, red}, diagonal(&b.Fields, 1, 0), "should return the diagonal with given starting point")
+	require.Equal(t, []color{none, blue, none, red}, diagonal(&b.Fields, 2, 0), "should return the diagonal with given starting point")
+	require.Equal(t, []color{none, blue, red}, diagonal(&b.Fields, 3, 0), "should return the diagonal with given starting point")
+	require.Equal(t, []color{none, red}, diagonal(&b.Fields, 4, 0), "should return the diagonal with given starting point")
+	require.Equal(t, []color{none}, diagonal(&b.Fields, 5, 0), "should return the diagonal with given starting point")
+
+	require.Equal(t, []color{none, none, red, none, red, none}, diagonal(&b.Fields, 0, 1), "should return the diagonal with given starting point")
+	require.Equal(t, []color{none, none, none, none, none}, diagonal(&b.Fields, 0, 2), "should return the diagonal with given starting point")
+	require.Equal(t, []color{blue, blue, red, red}, diagonal(&b.Fields, 0, 3), "should return the diagonal with given starting point")
+	require.Equal(t, []color{none, none, blue}, diagonal(&b.Fields, 0, 4), "should return the diagonal with given starting point")
+	require.Equal(t, []color{red, none}, diagonal(&b.Fields, 0, 5), "should return the diagonal with given starting point")
+	require.Equal(t, []color{red}, diagonal(&b.Fields, 0, 6), "should return the diagonal with given starting point")
+
+	require.Equal(t, []color{none, none, red}, diagonal(&b.Fields, 3, 2), "should return the diagonal with given starting point")
 }
