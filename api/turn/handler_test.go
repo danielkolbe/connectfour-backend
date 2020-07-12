@@ -37,6 +37,8 @@ func setup () {
     }
     gameServiceMock.On("Turn", 4,"324234-555").Return(nil);
     gameServiceMock.On("Turn", 3,"324234-555").Return(fmt.Errorf("error"));
+    gameServiceMock.On("Turn", 5,"324234-555").Return(game.NewColumnIsFullError(5));
+    gameServiceMock.On("Turn", 6,"324234-555").Return(game.NewMatchIsOverError());
     gameServiceMock.On("Turn", 2,"324234-555").Panic("panic!")
     h = NewHandler(&gameServiceMock, gameID)
     cookie = &http.Cookie{Name: "gameID", Value: "324234-555"}
@@ -55,6 +57,30 @@ func TestHandler(t *testing.T) {
     // Assert
     require.Equal(t, http.StatusOK, rr.Code, fmt.Sprintf("should return http 200 if request is valid"))
     
+    // Arrange
+    setup()    
+    body = struct {Column int}{5}
+    bytesBody,_ = json.Marshal(body)
+    req, _ = http.NewRequest("", "", bytes.NewReader(bytesBody))
+    req.AddCookie(cookie)
+    rr = httptest.NewRecorder()
+    // Act
+    h.ServeHTTP(rr, req)
+    // Assert
+    require.Equal(t, http.StatusConflict, rr.Code, fmt.Sprintf("should return http 409 if column is full"))
+    
+    // Arrange
+    setup()    
+    body = struct {Column int}{6}
+    bytesBody,_ = json.Marshal(body)
+    req, _ = http.NewRequest("", "", bytes.NewReader(bytesBody))
+    req.AddCookie(cookie)
+    rr = httptest.NewRecorder()
+    // Act
+    h.ServeHTTP(rr, req)
+    // Assert
+    require.Equal(t, http.StatusConflict, rr.Code, fmt.Sprintf("should return http 409 if column is full"))
+
     // Arrange
     body.Column = -1
     bytesBody,_ = json.Marshal(body)

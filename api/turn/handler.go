@@ -3,16 +3,16 @@ package turn
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 	"github.com/danielkolbe/connectfour/game"
 	"github.com/danielkolbe/connectfour/logger"
+	"io/ioutil"
+	"net/http"
 )
 
 // Handler implements the http.Handler interface.
 type Handler struct {
 	gameService game.Service
-	gameID func(w http.ResponseWriter, req *http.Request) string
+	gameID      func(w http.ResponseWriter, req *http.Request) string
 }
 
 // NewHandler returns a new Handler instance.
@@ -40,9 +40,18 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	logger.Logger.Debugf("Adding next chip to column %v for game %v", c, gameID)
-	if err := h.gameService.Turn(c, gameID);  nil != err {
-		logger.Logger.Error(err)
-		w.WriteHeader(http.StatusBadRequest)
+	if err := h.gameService.Turn(c, gameID); nil != err {
+		switch t := err.(type) {
+		case *game.ColumnIsFullError:
+			logger.Logger.Error(t)
+			w.WriteHeader(http.StatusConflict)
+		case *game.MatchIsOverError:
+			logger.Logger.Error(t)
+			w.WriteHeader(http.StatusConflict)	
+		default:
+			logger.Logger.Error(t)
+			w.WriteHeader(http.StatusBadRequest)
+		}
 		fmt.Fprint(w, err)
 	}
 }
@@ -63,7 +72,7 @@ func parseColumn(req *http.Request) (int, error) {
 	if 0 > t.Column {
 		return -1, fmt.Errorf("could not parse column or value of column < 0")
 	}
-	
+
 	return t.Column, nil
 }
 

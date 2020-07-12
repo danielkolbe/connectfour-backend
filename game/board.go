@@ -56,11 +56,14 @@ func newBoard() *Board {
 func (b *Board) addChip(column int) error {
 	b.mutex.Lock()
 	defer b.mutex.Unlock()
+	if none != b.win() {
+		return NewMatchIsOverError()
+	}
 	if nCols-1 < column || 0 > column {
 		return fmt.Errorf("column %v is out of bounds: 0-%v", column, nCols-1)
 	}
 	if none != b.Fields[0][column] {
-		return fmt.Errorf("column %v is full", column)
+		return NewColumnIsFullError(column)
 	}
 	for row := len(b.Fields) - 1; row >= 0; row-- {
 		if none == b.Fields[row][column] {
@@ -72,3 +75,11 @@ func (b *Board) addChip(column int) error {
 	
 	return nil
 }
+
+// win returns the winning color or none if
+// the board has no winner yet
+func (b *Board) win() color {
+	b.mutex.Lock()
+	defer b.mutex.Unlock()
+	return win(b);
+} 
