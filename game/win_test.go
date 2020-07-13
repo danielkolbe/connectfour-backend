@@ -14,7 +14,7 @@ func TestHasFour(t *testing.T) {
 	require.Equal(t, none, hasFour([]color{red, red, red, none, red}), "should return none")
 }
 
-func TestWin(t *testing.T) {
+func TestWinner(t *testing.T) {
 	// Arrange
 	b := Board{Fields: [nRows][nCols]color{
 		{none, none, none, blue, none, none, none},
@@ -26,7 +26,7 @@ func TestWin(t *testing.T) {
 	},
 	}
 	// Act & Assert
-	require.Equal(t, blue, win(&b), "should return blue (diagonal win)")
+	require.Equal(t, blue, winner(&b), "should return blue (diagonal win)")
 
 	// Arrange
 	b = Board{Fields: [nRows][nCols]color{
@@ -39,7 +39,7 @@ func TestWin(t *testing.T) {
 	},
 	}
 	// Act & Assert
-	require.Equal(t, blue, win(&b), "should return blue (horizontal win)")
+	require.Equal(t, blue, winner(&b), "should return blue (horizontal win)")
 
 	// Arrange
 	b = Board{Fields: [nRows][nCols]color{
@@ -52,7 +52,7 @@ func TestWin(t *testing.T) {
 	},
 	}
 	// Act & Assert
-	require.Equal(t, red, win(&b), "should return red (vertical win)")
+	require.Equal(t, red, winner(&b), "should return red (vertical win)")
 
 	// Arrange
 	b = Board{Fields: [nRows][nCols]color{
@@ -65,7 +65,7 @@ func TestWin(t *testing.T) {
 	},
 	}
 	// Act & Assert
-	require.Equal(t, none, win(&b), "should return none (no win)")
+	require.Equal(t, none, winner(&b), "should return none (no win)")
 	
 }
 

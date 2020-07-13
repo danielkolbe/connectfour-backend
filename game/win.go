@@ -1,10 +1,10 @@
 package game
 
-// win returns a color if four contiguous fields of the given
+// winner returns a color if four contiguous fields of the given
 // board of that color in a horizontal, vertical or diagonal line exist. 
 // It returns none otherwise.
 // If this condition applies for both colors one of both will be returned.
-func win(b *Board) color {
+func winner(b *Board) color {
 	if color := winHorizontal(b); none != color {
 		return color
 	}
@@ -18,7 +18,7 @@ func win(b *Board) color {
 	return none
 }
 
-// winH returns a color if four contiguous fields of the given
+// winHorizontal returns a color if four contiguous fields of the given
 // board of that color in a horizontal line exist. It returns none otherwise.
 // If this condition applies for both colors one of both will be returned.
 func winHorizontal(b *Board) color {

@@ -58,31 +58,30 @@ func TestString(t *testing.T) {
 	b := newBoard()
 	// Assert
 	require.Equal(t,
-		"n n n n n n n \n" +
-		"n n n n n n n \n" + 
-		"n n n n n n n \n" + 
-		"n n n n n n n \n" + 
-		"n n n n n n n \n" +
-		"n n n n n n n \n", b.String())
-	
+		"n n n n n n n \n"+
+			"n n n n n n n \n"+
+			"n n n n n n n \n"+
+			"n n n n n n n \n"+
+			"n n n n n n n \n"+
+			"n n n n n n n \n", b.String())
+
 	// Arrange
 	b.addChip(4)
 	b.addChip(2)
 	b.addChip(2)
 	// Act
 	require.Equal(t,
-		"n n n n n n n \n" +
-		"n n n n n n n \n" + 
-		"n n n n n n n \n" + 
-		"n n n n n n n \n" + 
-		"n n r n n n n \n" +
-		"n n b n r n n \n", b.String())
-}	
+		"n n n n n n n \n"+
+			"n n n n n n n \n"+
+			"n n n n n n n \n"+
+			"n n n n n n n \n"+
+			"n n r n n n n \n"+
+			"n n b n r n n \n", b.String())
+}
 
 func TestNextColor(t *testing.T) {
 	// Arrange
 	b := newBoard()
-
 	// Assert
 	require.Equal(t, red, b.nextColor, fmt.Sprintf("Next color must be red but was %v", b.nextColor))
 
@@ -97,4 +96,30 @@ func TestNextColor(t *testing.T) {
 	// Act & Assert
 	b.addChip(3)
 	require.Equal(t, blue, b.nextColor, fmt.Sprintf("Next color must be blue but was %v", b.nextColor))
+}
+
+func TestWin(t *testing.T) {
+	// Arrange
+	b := newBoard()
+	// Assert
+	require.Equal(t, none, b.winner, "Should return none on a newly created board")
+
+	// Arrange
+	b = &Board{Fields: [nRows][nCols]color{}, winner: blue}
+	// Assert
+	require.Equal(t, blue, b.winner, "Should return winner field if winner is already set")
+	
+	// Arrange
+	b = &Board{Fields: [nRows][nCols]color{
+		{none, none, none, blue, none, none, none},
+		{none, none, none, none, blue, none, none},
+		{none, red, none, none, none, blue, none},
+		{none, red, none, none, none, none, blue},
+		{none, red, blue, none, blue, none, none},
+		{none, red, red, red, blue, red, none},
+	}, winner: none,
+	}
+	// Assert
+	require.Equal(t, red, b.win(), "Should return winner from win method if field is none")
+	require.Equal(t, red, b.winner, "Should set winner field to red")
 }

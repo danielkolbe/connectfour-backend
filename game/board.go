@@ -11,6 +11,7 @@ import (
 type Board struct {
 	Fields    [nRows][nCols]color
 	nextColor color
+	winner color
 	mutex sync.Mutex
 }
 
@@ -47,16 +48,17 @@ func (c color) String() string {
 // newBoard returns a pointer to a new Board instance.
 // The nextColor field will be pre-set to red.
 func newBoard() *Board {
-	return &Board{Fields: [nRows][nCols]color{}, nextColor: red}
+	return &Board{Fields: [nRows][nCols]color{}, nextColor: red, winner: none}
 }
 
 // addChip adds a new chip to the Board inserting
 // it at the specified column. If the column is
 // full or out of bounds an error will be returned. 
 func (b *Board) addChip(column int) error {
+	winner := b.win()
 	b.mutex.Lock()
 	defer b.mutex.Unlock()
-	if none != b.win() {
+	if none != winner {
 		return NewMatchIsOverError()
 	}
 	if nCols-1 < column || 0 > column {
@@ -81,5 +83,10 @@ func (b *Board) addChip(column int) error {
 func (b *Board) win() color {
 	b.mutex.Lock()
 	defer b.mutex.Unlock()
-	return win(b);
+	if winner := b.winner; none != winner {
+		return winner
+	}
+	b.winner = winner(b)
+
+	return b.winner;
 } 
