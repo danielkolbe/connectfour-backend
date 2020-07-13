@@ -4,7 +4,7 @@ package game
 // board of that color in a horizontal, vertical or diagonal line exist. 
 // It returns none otherwise.
 // If this condition applies for both colors one of both will be returned.
-func winner(b *Board) color {
+func findwinner(b *Board) color {
 	if color := winHorizontal(b); none != color {
 		return color
 	}

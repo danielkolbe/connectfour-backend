@@ -26,6 +26,11 @@ func (mock *GameServiceMock) Board(gameID string) game.Board {
     return game.Board{}
 }
 
+func (mock *GameServiceMock) Winner(gameID string) (string, error) {
+	fmt.Println("Dummy method, please don't call")
+	return "" , nil
+}
+
 var h http.Handler
 var cookie *http.Cookie
 

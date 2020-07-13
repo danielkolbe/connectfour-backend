@@ -2,6 +2,19 @@ package game
 
 import "fmt"
 
+type BoardDoesNotExistError struct {
+	message string
+}
+
+func NewBoardDoesNotExistError(gameID string) error {
+	return &BoardDoesNotExistError{fmt.Sprintf("board with gameID <%v> does not exist", gameID)}
+}
+
+func (e *BoardDoesNotExistError) Error() string {
+	return e.message
+}
+
+
 type MatchIsOverError struct {
 	message string
 }

@@ -21,6 +21,11 @@ func (mock *GameServiceMock) Turn(column int, gameID string) error {
 	return nil
 }
 
+func (mock *GameServiceMock) Winner(gameID string) (string, error) {
+	fmt.Println("Dummy method, please don't call")
+	return "" , nil
+}
+
 func (mock *GameServiceMock) Board(gameID string) game.Board {
 	args := mock.Called(gameID)
 	return args.Get(0).(game.Board)

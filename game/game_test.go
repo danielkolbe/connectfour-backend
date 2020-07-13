@@ -56,3 +56,25 @@ func TestBoard(t *testing.T) {
 	b = c.Board("id_2")	
     require.Equal(t, red, b.Fields[5][0], "should return the right board (the one with red chip added)")
 }
+
+func TestWinner(t *testing.T) {
+	// Arrange
+	testGameDb.mutex.Lock()
+	defer func() {
+		gameDb = map[string] *Board{}
+		testGameDb.mutex.Unlock()
+	}()
+	c := CFour{}
+	// Act
+	color, error := c.Winner("unknown")
+	// Assert
+	require.NotEqual(t, nil, error, "should return an non-nil error if board does not exist")
+	require.Equal(t, NewBoardDoesNotExistError("unknown").Error(), error.Error(), "should return a NewBoardDoesNotExistError if board does not exit")
+	require.Equal(t, "", color, "should return an empty string for color if board does not exit")
+	
+	// Act & Assert
+	c.Board("id_1")
+	color, error = c.Winner("id_1")
+	require.Equal(t, nil, error, "should return an nil error if board does exist")
+	require.Equal(t, "n",color, "should return none for winning color on new board")
+}

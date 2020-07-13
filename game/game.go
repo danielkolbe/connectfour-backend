@@ -14,12 +14,15 @@ type Service interface {
 	// Returns the game board for the given id or a new one that
 	// can be referenced with the id on later calls.
 	Board(string) Board
+	// Winner returns the winning color for the board 
+    // with the given gameID. 
+	Winner(string) (string, error)
 }
 
 // Turn calls Board.addChip with the given column
 // on the Board with the given gameID if such a Board
 // already exists. If not a new Board with given gameID
-// wil be created and addChip be called on it.
+// will be created and addChip be called on it.
 func (c CFour) Turn(column int, gameID string) error {
 	var b *Board
 	if bo, ok := gameDb[gameID]; ok {
@@ -34,7 +37,7 @@ func (c CFour) Turn(column int, gameID string) error {
 
 // Board returns a copy of the game board that belongs to 
 // the given game id. If such a board does not exist a new board
-// with this id will be instantiated and returned.
+// with that id will be instantiated and returned.
 func (c CFour) Board(gameID string) Board {
 	var b *Board
 	if bo, ok := gameDb[gameID]; ok {
@@ -46,4 +49,15 @@ func (c CFour) Board(gameID string) Board {
 	
 	return *b
 }
+
+// Winner returns the winning color for the board 
+// with the given gameID. It returns an BoardDoesNotExistError
+// if such a board does not exist
+func (c CFour) Winner(gameID string) (string, error) {
+	if board, ok := gameDb[gameID]; ok {
+		return board.win().String(), nil
+	} 
+	return "", NewBoardDoesNotExistError(gameID)
+}
+
 

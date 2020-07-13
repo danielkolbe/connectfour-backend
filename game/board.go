@@ -53,7 +53,8 @@ func newBoard() *Board {
 
 // addChip adds a new chip to the Board inserting
 // it at the specified column. If the column is
-// full or out of bounds an error will be returned. 
+// full or out of bounds or the match has already a winner 
+// an customn error will be returned. 
 func (b *Board) addChip(column int) error {
 	winner := b.win()
 	b.mutex.Lock()
@@ -86,7 +87,7 @@ func (b *Board) win() color {
 	if winner := b.winner; none != winner {
 		return winner
 	}
-	b.winner = winner(b)
+	b.winner = findwinner(b)
 
 	return b.winner;
 } 
