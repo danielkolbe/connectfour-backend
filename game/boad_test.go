@@ -25,8 +25,29 @@ func TestErrorHandlingFullColumn(t *testing.T) {
 	}
 	// Column 0 is full already.
 	error := b.addChip(0)
-	require.NotEqual(t, nil, error, "No error returned.")
+	require.NotEqual(t, nil, error, "should return an non-nil error if column is full")
+	require.Equal(t, NewColumnIsFullError(0).Error(), error.Error(), "should return an ColumnIsFullError if column is full")
 }
+
+func TestErrorHandlingColumnOutOfBounds(t *testing.T) {
+	// Arrange
+	b := newBoard()
+	// Act
+	error := b.addChip(nCols)
+	// Assert
+	require.Equal(t, NewColumnIsOutOfBoundsError(nCols).Error(), error.Error(), "should return an ColumnIsOutOfBoundsError")
+}
+
+func TestErrorHandlingMatchIsOver(t *testing.T) {
+	// Arrange
+	b := newBoard()
+	b.winner = red
+	// Act
+	error := b.addChip(0)
+	// Assert
+	require.Equal(t, NewMatchIsOverError().Error(), error.Error(), "should return an MatchIsOverError if board has already a winner")
+}
+
 func TestAddChip(t *testing.T) {
 	// Arrange
 	b := newBoard()

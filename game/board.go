@@ -1,7 +1,6 @@
 package game
 
 import (
-	"fmt"
 	"strings"
 	"sync"
 )
@@ -63,7 +62,7 @@ func (b *Board) addChip(column int) error {
 		return NewMatchIsOverError()
 	}
 	if nCols-1 < column || 0 > column {
-		return fmt.Errorf("column %v is out of bounds: 0-%v", column, nCols-1)
+		return NewColumnIsOutOfBoundsError(column)
 	}
 	if none != b.Fields[0][column] {
 		return NewColumnIsFullError(column)
