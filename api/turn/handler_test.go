@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
 	"github.com/danielkolbe/connectfour/game"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
