@@ -77,7 +77,7 @@ func TestHandler(t *testing.T) {
     bodyBytes, _ := ioutil.ReadAll(rr.Body)
     bodyString := string(bodyBytes)
     require.Equal(t, http.StatusConflict, rr.Code, fmt.Sprintf("should return http 409 if game service returns an ColumnIsFullError"))
-    require.Equal(t, "column 5 is full", bodyString, fmt.Sprintf("should return write the correct error message to response body"))
+    require.Equal(t, "column 5 is full", bodyString, fmt.Sprintf("should write the correct error message to response body"))
    
     // Arrange
     setup()    
@@ -92,7 +92,7 @@ func TestHandler(t *testing.T) {
     bodyBytes, _ = ioutil.ReadAll(rr.Body)
     bodyString = string(bodyBytes)
     require.Equal(t, http.StatusConflict, rr.Code, fmt.Sprintf("should return http 409 if ame service returns an MatchIsOverError"))
-    require.Equal(t, "match has already a winner", bodyString, fmt.Sprintf("should return write the correct error message to response body"))
+    require.Equal(t, "match has already a winner", bodyString, fmt.Sprintf("should write the correct error message to response body"))
     
     // Arrange
     body.Column = -1
@@ -106,7 +106,7 @@ func TestHandler(t *testing.T) {
     bodyBytes, _ = ioutil.ReadAll(rr.Body)
     bodyString = string(bodyBytes)
     require.Equal(t, http.StatusBadRequest, rr.Code, fmt.Sprintf("should return http 400 if column number is negative"))
-    require.Equal(t, "missing or negative column property in post body", bodyString, fmt.Sprintf("should return write the correct error message to response body"))
+    require.Equal(t, "missing or negative column property in post body", bodyString, fmt.Sprintf("should write the correct error message to response body"))
 
     // Arrange
     wrongBody := struct {Unknown int}{4}
@@ -120,7 +120,7 @@ func TestHandler(t *testing.T) {
     bodyBytes, _ = ioutil.ReadAll(rr.Body)
     bodyString = string(bodyBytes)
     require.Equal(t, http.StatusBadRequest, rr.Code, fmt.Sprintf("should return http 400 if body does not contain column field"))
-    require.Equal(t, "missing or negative column property in post body", bodyString, fmt.Sprintf("should return write the correct error message to response body"))
+    require.Equal(t, "missing or negative column property in post body", bodyString, fmt.Sprintf("should write the correct error message to response body"))
 
     // Arrange
     body.Column = 3
@@ -134,7 +134,7 @@ func TestHandler(t *testing.T) {
     bodyBytes, _ = ioutil.ReadAll(rr.Body)
     bodyString = string(bodyBytes)
     require.Equal(t, http.StatusInternalServerError, rr.Code, fmt.Sprintf("should return http 500 if game service returns an unknown error"))
-    require.Equal(t, "sorry for that", bodyString, fmt.Sprintf("should return write the correct error message to response body"))
+    require.Equal(t, "sorry for that", bodyString, fmt.Sprintf("should write the correct error message to response body"))
 
      // Arrange
      body.Column = 10
@@ -148,7 +148,7 @@ func TestHandler(t *testing.T) {
      bodyBytes, _ = ioutil.ReadAll(rr.Body)
      bodyString = string(bodyBytes)
      require.Equal(t, http.StatusBadRequest, rr.Code, fmt.Sprintf("should return http 400 if game service returns an ColumnIsOutOfBoundsError"))
-     require.Equal(t, "column 10 is out of bounds: 0-6", bodyString, fmt.Sprintf("should return write the correct error message to response body"))
+     require.Equal(t, "column 10 is out of bounds: 0-6", bodyString, fmt.Sprintf("should write the correct error message to response body"))
 
      // Arrange
      body.Column = 2
@@ -162,5 +162,5 @@ func TestHandler(t *testing.T) {
      bodyBytes, _ = ioutil.ReadAll(rr.Body)
      bodyString = string(bodyBytes)
      require.Equal(t, http.StatusInternalServerError, rr.Code, fmt.Sprintf("should return http 500 in case of panic"))
-     require.Equal(t, "sorry for that\n", bodyString, fmt.Sprintf("should return write the correct error message to response body"))
+     require.Equal(t, "sorry for that\n", bodyString, fmt.Sprintf("should write the correct error message to response body"))
 }

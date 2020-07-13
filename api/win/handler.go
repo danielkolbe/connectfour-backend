@@ -1,45 +1,49 @@
-package board
+package win
 
 import (
-	"encoding/json"
 	"fmt"
-	"net/http"
 	"github.com/danielkolbe/connectfour/game"
 	"github.com/danielkolbe/connectfour/logger"
+	"net/http"
 )
 
 // Handler implements the http.Handler interface.
 type Handler struct {
 	gameService game.Service
-	gameID func(w http.ResponseWriter, req *http.Request) string
+	gameID      func(w http.ResponseWriter, req *http.Request) string
 }
 
 // NewHandler returns a new Handler instance.
 // If NewHandler is used, the returned handler will
 // be wrapped so that any panic that is escalated to the
 // handler will be turned into an http 500 response
-func NewHandler(gameService game.Service,  gameID func(w http.ResponseWriter, req *http.Request) string) http.Handler {
+func NewHandler(gameService game.Service, gameID func(w http.ResponseWriter, req *http.Request) string) http.Handler {
 	return panicRecover(Handler{gameService, gameID})
 }
 
-// ServerHTTP takes an incoming (GET) request for an game existing
-// game board. Reads the gameID from cookie. If the gameID is not present
-// or does not match an existing game a new board will be returned.
+// ServerHTTP takes an incoming (Get) request for the winning
+// color of the related game board.
 // Steps:
 // 1) Extract gameID from cookie if present, else create and set cookie
-// 2) Obtain existing or new board
-// 3) Return board as json if content-type is application/json, board as text else
+// 2) Calls gameService.Winner with gameID and return the result or an error
 func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	gameID := h.gameID(w, req)
-	logger.Logger.Debugf("Retrieving current board for game %v", gameID)
-	board := h.gameService.Board(gameID)
-	if "application/json" == req.Header.Get("Content-type") {
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(board)
-
+	logger.Logger.Debugf("Retrieving winner for game %v", gameID)
+	color, err := h.gameService.Winner(gameID)
+	if nil != err {
+		switch t := err.(type) {
+		case *game.BoardDoesNotExistError:
+			logger.Logger.Error(t)
+			w.WriteHeader(http.StatusNotFound)			
+		default:
+			logger.Logger.Error(t)
+			err = fmt.Errorf("sorry for that")
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+		fmt.Fprint(w, err)
 		return
 	}
-	w.Write([]byte(board.String()))
+	fmt.Fprint(w, color)
 }
 
 // panicRecover wraps an http.Handler instance so that any panic that
@@ -50,7 +54,7 @@ func panicRecover(h http.Handler) http.Handler {
 			r := recover()
 			if r != nil {
 				logger.Logger.Error(r)
-				http.Error(w, fmt.Errorf("well that's embarrassing").Error(), http.StatusInternalServerError)
+				http.Error(w, fmt.Errorf("sorry for that").Error(), http.StatusInternalServerError)
 			}
 		}()
 		h.ServeHTTP(w, req)
