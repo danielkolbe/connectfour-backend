@@ -36,7 +36,7 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	if nil != err {
 		logger.Logger.Error(err)
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, "Please provide a query parameter 'column' as integer greater or equal 0")
+		fmt.Fprint(w, "missing or negative column property in post body")
 		return
 	}
 	logger.Logger.Debugf("Adding next chip to column %v for game %v", c, gameID)
@@ -47,10 +47,17 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 			w.WriteHeader(http.StatusConflict)
 		case *game.MatchIsOverError:
 			logger.Logger.Error(t)
-			w.WriteHeader(http.StatusConflict)	
+			w.WriteHeader(http.StatusConflict)
+		case *game.BoardDoesNotExistError:
+			logger.Logger.Error(t)
+			w.WriteHeader(http.StatusNotFound)
+		case *game.ColumnIsOutOfBoundsError:
+			logger.Logger.Error(t)
+			w.WriteHeader(http.StatusBadRequest)				
 		default:
 			logger.Logger.Error(t)
-			w.WriteHeader(http.StatusBadRequest)
+			err = fmt.Errorf("sorry for that")
+			w.WriteHeader(http.StatusInternalServerError)
 		}
 		fmt.Fprint(w, err)
 	}
@@ -84,7 +91,7 @@ func panicRecover(h http.Handler) http.Handler {
 			r := recover()
 			if r != nil {
 				logger.Logger.Error(r)
-				http.Error(w, fmt.Errorf("well that's embarrassing").Error(), http.StatusInternalServerError)
+				http.Error(w, fmt.Errorf("sorry for that").Error(), http.StatusInternalServerError)
 			}
 		}()
 		h.ServeHTTP(w, req)

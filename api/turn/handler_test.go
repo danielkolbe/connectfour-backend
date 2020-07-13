@@ -4,12 +4,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/danielkolbe/connectfour/game"
 	"github.com/stretchr/testify/mock"
-    "github.com/stretchr/testify/require"
-    "github.com/danielkolbe/connectfour/game"
+	"github.com/stretchr/testify/require"
 )
 
 type GameServiceMock struct {
@@ -44,6 +46,7 @@ func setup () {
     gameServiceMock.On("Turn", 3,"324234-555").Return(fmt.Errorf("error"));
     gameServiceMock.On("Turn", 5,"324234-555").Return(game.NewColumnIsFullError(5));
     gameServiceMock.On("Turn", 6,"324234-555").Return(game.NewMatchIsOverError());
+    gameServiceMock.On("Turn", 10,"324234-555").Return(game.NewColumnIsOutOfBoundsError(10));
     gameServiceMock.On("Turn", 2,"324234-555").Panic("panic!")
     h = NewHandler(&gameServiceMock, gameID)
     cookie = &http.Cookie{Name: "gameID", Value: "324234-555"}
@@ -72,8 +75,11 @@ func TestHandler(t *testing.T) {
     // Act
     h.ServeHTTP(rr, req)
     // Assert
-    require.Equal(t, http.StatusConflict, rr.Code, fmt.Sprintf("should return http 409 if column is full"))
-    
+    bodyBytes, _ := ioutil.ReadAll(rr.Body)
+    bodyString := string(bodyBytes)
+    require.Equal(t, http.StatusConflict, rr.Code, fmt.Sprintf("should return http 409 if game service returns an ColumnIsFullError"))
+    require.Equal(t, "column 5 is full", bodyString, fmt.Sprintf("should return write the correct error message to response body"))
+   
     // Arrange
     setup()    
     body = struct {Column int}{6}
@@ -84,8 +90,11 @@ func TestHandler(t *testing.T) {
     // Act
     h.ServeHTTP(rr, req)
     // Assert
-    require.Equal(t, http.StatusConflict, rr.Code, fmt.Sprintf("should return http 409 if column is full"))
-
+    bodyBytes, _ = ioutil.ReadAll(rr.Body)
+    bodyString = string(bodyBytes)
+    require.Equal(t, http.StatusConflict, rr.Code, fmt.Sprintf("should return http 409 if ame service returns an MatchIsOverError"))
+    require.Equal(t, "match has already a winner", bodyString, fmt.Sprintf("should return write the correct error message to response body"))
+    
     // Arrange
     body.Column = -1
     bytesBody,_ = json.Marshal(body)
@@ -95,7 +104,10 @@ func TestHandler(t *testing.T) {
     // Act
     h.ServeHTTP(rr, req)
     // Assert
+    bodyBytes, _ = ioutil.ReadAll(rr.Body)
+    bodyString = string(bodyBytes)
     require.Equal(t, http.StatusBadRequest, rr.Code, fmt.Sprintf("should return http 400 if column number is negative"))
+    require.Equal(t, "missing or negative column property in post body", bodyString, fmt.Sprintf("should return write the correct error message to response body"))
 
     // Arrange
     wrongBody := struct {Unknown int}{4}
@@ -106,7 +118,10 @@ func TestHandler(t *testing.T) {
     // Act
     h.ServeHTTP(rr, req)
     // Assert
+    bodyBytes, _ = ioutil.ReadAll(rr.Body)
+    bodyString = string(bodyBytes)
     require.Equal(t, http.StatusBadRequest, rr.Code, fmt.Sprintf("should return http 400 if body does not contain column field"))
+    require.Equal(t, "missing or negative column property in post body", bodyString, fmt.Sprintf("should return write the correct error message to response body"))
 
     // Arrange
     body.Column = 3
@@ -117,7 +132,24 @@ func TestHandler(t *testing.T) {
     // Act
     h.ServeHTTP(rr, req)
     // Assert
-    require.Equal(t, http.StatusBadRequest, rr.Code, fmt.Sprintf("should return http 400 if error if game service returns error"))
+    bodyBytes, _ = ioutil.ReadAll(rr.Body)
+    bodyString = string(bodyBytes)
+    require.Equal(t, http.StatusInternalServerError, rr.Code, fmt.Sprintf("should return http 500 if game service returns an unknown error"))
+    require.Equal(t, "sorry for that", bodyString, fmt.Sprintf("should return write the correct error message to response body"))
+
+     // Arrange
+     body.Column = 10
+     bytesBody,_ = json.Marshal(body)
+     req, _ = http.NewRequest("", "", bytes.NewReader(bytesBody))
+     req.AddCookie(cookie)
+     rr = httptest.NewRecorder()
+     // Act
+     h.ServeHTTP(rr, req)
+     // Assert
+     bodyBytes, _ = ioutil.ReadAll(rr.Body)
+     bodyString = string(bodyBytes)
+     require.Equal(t, http.StatusBadRequest, rr.Code, fmt.Sprintf("should return http 400 if game service returns an ColumnIsOutOfBoundsError"))
+     require.Equal(t, "column 10 is out of bounds: 0-6", bodyString, fmt.Sprintf("should return write the correct error message to response body"))
 
      // Arrange
      body.Column = 2
@@ -128,5 +160,8 @@ func TestHandler(t *testing.T) {
      // Act
      h.ServeHTTP(rr, req)
      // Assert
+     bodyBytes, _ = ioutil.ReadAll(rr.Body)
+     bodyString = string(bodyBytes)
      require.Equal(t, http.StatusInternalServerError, rr.Code, fmt.Sprintf("should return http 500 in case of panic"))
+     require.Equal(t, "sorry for that\n", bodyString, fmt.Sprintf("should return write the correct error message to response body"))
 }

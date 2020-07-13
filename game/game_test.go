@@ -21,17 +21,22 @@ func TestTurn(t *testing.T) {
 		testGameDb.mutex.Unlock()
 	}()	
 	c := CFour{}
-	// Assert
-	require.Equal(t, 0, len(*testGameDb.games), "initial size of game database should be zero")
 	// Act & Assert
-	c.Turn(3, "id_1")
-	require.Equal(t, 1, len(*testGameDb.games), "size of game database should be 1")
+	error := c.Turn(3, "id_1")
+	require.NotEqual(t, nil, error, "should return an BoardDoesNotExistError")
+	require.Equal(t, NewBoardDoesNotExistError("id_1").Error(), error.Error(), "should return an BoardDoesNotExistError")
+	
 	// Act & Assert
-	c.Turn(3, "id_1")
-	require.Equal(t, 1, len(*testGameDb.games), "size of game database should be 1")
-	// Act & Assert
-	c.Turn(3, "id_2")
-	require.Equal(t, 2, len(*testGameDb.games), "size of game database should be 2")
+	(*testGameDb.games)["id_1"] = newBoard()
+	error=c.Turn(3, "id_1")
+	require.Equal(t, nil, error, "should return an nil-error if board exists")
+	require.Equal(t,
+		"n n n n n n n \n"+
+			"n n n n n n n \n"+
+			"n n n n n n n \n"+
+			"n n n n n n n \n"+
+			"n n n n n n n \n"+
+			"n n n r n n n \n", (*testGameDb.games)["id_1"].String(), "should call addChip if board exists")
 }
 
 func TestBoard(t *testing.T) {

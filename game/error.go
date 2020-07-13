@@ -47,7 +47,7 @@ type ColumnIsOutOfBoundsError struct {
 }
 
 func NewColumnIsOutOfBoundsError(column int) error {
-	return &ColumnIsFullError{fmt.Sprintf("column %v is out of bounds: 0-%v", column, nCols-1)}
+	return &ColumnIsOutOfBoundsError{fmt.Sprintf("column %v is out of bounds: 0-%v", column, nCols-1)}
 }
 
 func (e *ColumnIsOutOfBoundsError) Error() string {

@@ -18,8 +18,16 @@ func TestRouter(t *testing.T) {
 	// Act
 	NewRouter().ServeHTTP(rr, req)
 	// Assert
-	require.Equal(t, http.StatusOK, rr.Code, "should return http status 200" )
+	require.Equal(t, http.StatusNotFound, rr.Code, "should return http status 404" )
 	
+	// Arrange
+	rr = httptest.NewRecorder()
+	req, _ = http.NewRequest("GET", "/board", nil)	
+	// Act
+	NewRouter().ServeHTTP(rr, req)
+	// Assert
+	require.Equal(t, http.StatusOK, rr.Code, "should return http status 200" )
+
 	// Arrange
 	rr = httptest.NewRecorder()
 	req, _ = http.NewRequest("GET", "/turn?column=1", nil)	
