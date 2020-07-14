@@ -54,4 +54,12 @@ func (c CFour) Winner(gameID string) (string, error) {
 	return "", NewBoardDoesNotExistError(gameID)
 }
 
-
+// Reset sets the board with given gameID back to initial state.
+// It returns an BoardDoesNotExistError if no such board exists. 
+func (c CFour) Reset(gameID string) error {
+	if _, ok := gameDb[gameID]; ok {
+		gameDb[gameID] = newBoard()
+		return  nil
+	} 
+	return NewBoardDoesNotExistError(gameID)
+}

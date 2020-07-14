@@ -83,3 +83,25 @@ func TestWinner(t *testing.T) {
 	require.Equal(t, nil, error, "should return an nil error if board does exist")
 	require.Equal(t, "n",color, "should return none for winning color on new board")
 }
+func TestReset(t *testing.T) {
+	// Arrange
+	testGameDb.mutex.Lock()
+	defer func() {
+		gameDb = map[string] *Board{}
+		testGameDb.mutex.Unlock()
+	}()
+	c := CFour{}
+	// Arrange 
+	b := newBoard()
+	b.addChip(2)
+	(*testGameDb.games)["id_1"] = b
+	// Act
+	error := c.Reset("id_1")
+	require.Equal(t, newBoard(), (*testGameDb.games)["id_1"], "should reset board to initial state")
+	require.Equal(t, nil, error, "should not return an error if board exists")
+	
+	// Act
+	error = c.Reset("unknown")
+	// Assert
+	require.Equal(t, NewBoardDoesNotExistError("unknown").Error(), error.Error(), "should return a NewBoardDoesNotExistError if board does not exit")
+}
