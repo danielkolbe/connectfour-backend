@@ -25,7 +25,8 @@ func NewHandler(gameService game.Service, gameID func(w http.ResponseWriter, req
 // color of the related game board.
 // Steps:
 // 1) Extract gameID from cookie if present, else create and set cookie
-// 2) Calls gameService.Winner with gameID and return the result or an error
+// 2) Calls gameService.Winner with the gameID and return result or
+//    convert error into matching http response if any
 func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	gameID := h.gameID(w, req)
 	logger.Logger.Debugf("Retrieving winner for game %v", gameID)
@@ -34,6 +35,7 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		switch t := err.(type) {
 		case *game.BoardDoesNotExistError:
 			logger.Logger.Error(t)
+			err = fmt.Errorf("no board created, please perform GET request on /board first")
 			w.WriteHeader(http.StatusNotFound)			
 		default:
 			logger.Logger.Error(t)

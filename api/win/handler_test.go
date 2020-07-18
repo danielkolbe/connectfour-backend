@@ -76,7 +76,7 @@ func TestHandler(t *testing.T) {
     bodyBytes, _ = ioutil.ReadAll(rr.Body)
     bodyString = string(bodyBytes)
     require.Equal(t, http.StatusNotFound, rr.Code, fmt.Sprintf("should return http 400 if board does not exist"))
-    require.Equal(t, "board with gameID <unknown> does not exist", bodyString, fmt.Sprintf("should return the correct error message to response body"))
+    require.Equal(t, "no board created, please perform GET request on /board first", bodyString, fmt.Sprintf("should return the correct error message to response body"))
 
     // Arrange
     setup()    

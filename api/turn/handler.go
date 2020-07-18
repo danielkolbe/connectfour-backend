@@ -23,13 +23,14 @@ func NewHandler(gameService game.Service, gameID func(w http.ResponseWriter, req
 	return panicRecover(Handler{gameService, gameID})
 }
 
-// ServerHTTP takes an incoming (POST) request which is required to have
+// ServerHTTP takes an incoming (PATCH) request which is required to have
 // a body that can be unmarshalled to struct {Column int}. Performs the
 // next turn on the related game board.
 // Steps:
 // 1) Extract gameID from cookie if present, else create and set cookie
 // 2) Parse column number from request
-// 3) Calls gameService.Turn with the given column number and return error if any
+// 3) Calls gameService.Turn with the given column number and the gameID
+// 4) Convert error into matching http response if any
 func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	gameID := h.gameID(w, req)
 	c, err := parseColumn(req)
@@ -50,6 +51,7 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 			logger.Logger.Error(t)
 			w.WriteHeader(http.StatusConflict)
 		case *game.BoardDoesNotExistError:
+			err = fmt.Errorf("no board created, please perform GET request on /board first")
 			logger.Logger.Error(t)
 			w.WriteHeader(http.StatusNotFound)
 		case *game.ColumnIsOutOfBoundsError:

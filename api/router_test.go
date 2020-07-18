@@ -14,7 +14,7 @@ func TestRouter(t *testing.T) {
 	rr := httptest.NewRecorder()
 	body := struct {Column int}{4}
     bytesBody,_ := json.Marshal(body)
-    req, _ := http.NewRequest("POST", "/turn", bytes.NewReader(bytesBody))
+    req, _ := http.NewRequest("PATCH", "/turn", bytes.NewReader(bytesBody))
 	// Act
 	NewRouter().ServeHTTP(rr, req)
 	// Assert
