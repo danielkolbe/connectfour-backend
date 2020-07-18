@@ -15,20 +15,26 @@ type GameServiceMock struct {
     mock.Mock
 }
 
-func (mock *GameServiceMock) Turn(column int, gameID string) error {
-    fmt.Println("Dummy method, please don't call")
-	return  nil
-}
-
-func (mock *GameServiceMock) Board(gameID string) game.Board {
-    fmt.Println("Dummy method, please don't call")
-    return game.Board{}
-}
-
 func (mock *GameServiceMock) Winner(gameID string) (string, error) {
     args := mock.Called(gameID)
     return args.String(0), args.Error(1)
 }
+
+func (mock *GameServiceMock) Turn(column int, gameID string) error {
+    fmt.Println("The number you have dialed is not available.")
+	return  nil
+}
+
+func (mock *GameServiceMock) Board(gameID string) game.Board {
+    fmt.Println("The number you have dialed is not available.")
+    return game.Board{}
+}
+
+func (mock *GameServiceMock) Reset(gameID string) error {
+    fmt.Println("The number you have dialed is not available.")
+    return nil
+}
+
 
 var h http.Handler
 var cookie *http.Cookie

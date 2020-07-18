@@ -23,13 +23,19 @@ func (mock *GameServiceMock) Turn(column int, gameID string) error {
 }
 
 func (mock *GameServiceMock) Board(gameID string) game.Board {
-    fmt.Println("Dummy method, please don't call")
+    fmt.Println("The number you have dialed is not available.")
     return game.Board{}
 }
 
 func (mock *GameServiceMock) Winner(gameID string) (string, error) {
-	fmt.Println("Dummy method, please don't call")
+	fmt.Println("The number you have dialed is not available.")
 	return "" , nil
+}
+
+
+func (mock *GameServiceMock) Reset(gameID string) error {
+    fmt.Println("The number you have dialed is not available.")
+    return nil
 }
 
 var h http.Handler

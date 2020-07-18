@@ -17,6 +17,8 @@ type Service interface {
 	// Winner returns the winning color for the board 
     // with the given gameID. 
 	Winner(string) (string, error)
+    // Reset sets the board with given gameID back to its initial state.
+	Reset(string) (error)
 }
 
 // Turn calls Board.addChip with the given column
@@ -54,7 +56,7 @@ func (c CFour) Winner(gameID string) (string, error) {
 	return "", NewBoardDoesNotExistError(gameID)
 }
 
-// Reset sets the board with given gameID back to initial state.
+// Reset sets the board with given gameID back to its initial state.
 // It returns an BoardDoesNotExistError if no such board exists. 
 func (c CFour) Reset(gameID string) error {
 	if _, ok := gameDb[gameID]; ok {
