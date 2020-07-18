@@ -51,7 +51,7 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 			logger.Logger.Error(t)
 			w.WriteHeader(http.StatusConflict)
 		case *game.BoardDoesNotExistError:
-			err = fmt.Errorf("no board created, please perform GET request on /board first")
+			err = fmt.Errorf("no board created, please perform a GET request on /board first")
 			logger.Logger.Error(t)
 			w.WriteHeader(http.StatusNotFound)
 		case *game.ColumnIsOutOfBoundsError:

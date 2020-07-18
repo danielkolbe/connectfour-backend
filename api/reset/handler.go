@@ -1,4 +1,4 @@
-package win
+package reset
 
 import (
 	"fmt"
@@ -21,16 +21,15 @@ func NewHandler(gameService game.Service, gameID func(w http.ResponseWriter, req
 	return panicRecover(Handler{gameService, gameID})
 }
 
-// ServerHTTP takes an incoming (Get) request for the winning
-// color of the related game board.
+// ServerHTTP takes an incoming (Patch) to reset the related game board.
 // Steps:
 // 1) Extract gameID from cookie if present, else create and set cookie
-// 2) Calls gameService.Winner with the gameID and return result or
-//    convert error into matching http response if any
+// 2) Calls gameService.Reset with the gameID 
+// 3) Convert error into matching http response if any
 func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	gameID := h.gameID(w, req)
-	logger.Logger.Debugf("Retrieving winner for game %v", gameID)
-	color, err := h.gameService.Winner(gameID)
+	logger.Logger.Debugf("Resetting board for game %v", gameID)
+	err := h.gameService.Reset(gameID)
 	if nil != err {
 		switch t := err.(type) {
 		case *game.BoardDoesNotExistError:
@@ -45,7 +44,6 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		fmt.Fprint(w, err)
 		return
 	}
-	fmt.Fprint(w, color)
 }
 
 // panicRecover wraps an http.Handler instance so that any panic that

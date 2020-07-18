@@ -12,9 +12,25 @@ import (
 func TestRouter(t *testing.T) {
 	// Arrange
 	rr := httptest.NewRecorder()
+    req, _ := http.NewRequest("GET", "/reset", nil)
+	// Act
+	NewRouter().ServeHTTP(rr, req)
+	// Assert
+	require.Equal(t, http.StatusMethodNotAllowed, rr.Code, "should return http status 405 if method not equal to PATCH" )
+
+	// Arrange
+	rr = httptest.NewRecorder()
+    req, _ = http.NewRequest("PATCH", "/reset", nil)
+	// Act
+	NewRouter().ServeHTTP(rr, req)
+	// Assert
+	require.Equal(t, http.StatusNotFound, rr.Code, "should return http status 404" )
+
+	// Arrange
+	rr = httptest.NewRecorder()
 	body := struct {Column int}{4}
     bytesBody,_ := json.Marshal(body)
-    req, _ := http.NewRequest("PATCH", "/turn", bytes.NewReader(bytesBody))
+    req, _ = http.NewRequest("PATCH", "/turn", bytes.NewReader(bytesBody))
 	// Act
 	NewRouter().ServeHTTP(rr, req)
 	// Assert

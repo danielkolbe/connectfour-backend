@@ -1,4 +1,4 @@
-package win
+package reset
 
 import (
 	"fmt"
@@ -15,14 +15,14 @@ type GameServiceMock struct {
     mock.Mock
 }
 
-func (mock *GameServiceMock) Winner(gameID string) (string, error) {
+func (mock *GameServiceMock) Reset(gameID string) error {
     args := mock.Called(gameID)
-    return args.String(0), args.Error(1)
+	return args.Error(0)
 }
 
 func (mock *GameServiceMock) Turn(column int, gameID string) error {
     fmt.Println("The number you have dialed is not available.")
-	return  nil
+	return nil
 }
 
 func (mock *GameServiceMock) Board(gameID string) game.Board {
@@ -30,11 +30,10 @@ func (mock *GameServiceMock) Board(gameID string) game.Board {
     return game.Board{}
 }
 
-func (mock *GameServiceMock) Reset(gameID string) error {
-    fmt.Println("The number you have dialed is not available.")
-    return nil
+func (mock *GameServiceMock) Winner(gameID string) (string, error) {
+	fmt.Println("The number you have dialed is not available.")
+	return "" , nil
 }
-
 
 var h http.Handler
 var cookie *http.Cookie
@@ -45,10 +44,11 @@ func setup () {
         c, _ := req.Cookie("gameID")
         return c.Value
     }
-    gameServiceMock.On("Winner", "324234-555").Return("b", nil);
-    gameServiceMock.On("Winner", "unknown").Return("b", game.NewBoardDoesNotExistError("unknown"));
-    gameServiceMock.On("Winner", "panic").Panic("panic!")
+    gameServiceMock.On("Reset", "324234-555").Return(nil);
+    gameServiceMock.On("Reset", "unknown").Return(game.NewBoardDoesNotExistError("unknown"));
+    gameServiceMock.On("Reset", "panic").Panic("panic!")
     h = NewHandler(&gameServiceMock, gameID)
+    cookie = &http.Cookie{Name: "gameID", Value: "324234-555"}
 }
 
 func TestHandler(t *testing.T) {
@@ -63,7 +63,6 @@ func TestHandler(t *testing.T) {
     bodyBytes, _ := ioutil.ReadAll(rr.Body)
     bodyString := string(bodyBytes)
     require.Equal(t, http.StatusOK, rr.Code, fmt.Sprintf("should return http 200 if request is valid"))
-    require.Equal(t, "b", bodyString, fmt.Sprintf("should return b if winner is blue"))
 
     // Arrange
     setup()    
