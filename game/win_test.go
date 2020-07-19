@@ -275,3 +275,9 @@ func TestDiagonal(t *testing.T) {
 
 	require.Equal(t, []color{none, none, red}, diagonal(&b.Fields, 3, 2), "should return the diagonal with given starting point")
 }
+
+func BenchmarkFindWinner (b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		findwinner(newBoard())
+	}
+}
