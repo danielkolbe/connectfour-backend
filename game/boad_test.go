@@ -129,7 +129,7 @@ func TestWin(t *testing.T) {
 	b = &Board{Fields: [nRows][nCols]color{}, winner: blue}
 	// Assert
 	require.Equal(t, blue, b.winner, "Should return winner field if winner is already set")
-	
+
 	// Arrange
 	b = &Board{Fields: [nRows][nCols]color{
 		{none, none, none, blue, none, none, none},
@@ -143,4 +143,42 @@ func TestWin(t *testing.T) {
 	// Assert
 	require.Equal(t, red, b.win(), "Should return winner from win method if field is none")
 	require.Equal(t, red, b.winner, "Should set winner field to red")
+}
+
+func TestFColumns(t *testing.T) {
+	// Arrange
+	b := Board{Fields: [nRows][nCols]color{
+		{none, red, none, none, none, blue, none},
+		{none, red, none, none, blue, blue, none},
+		{none, red, none, none, none, blue, none},
+		{none, red, none, none, red, blue, blue},
+		{none, red, blue, none, red, blue, none},
+		{none, red, red, red, blue, red, none},
+	}}
+	// Act & Assert
+	require.Equal(t, []int {0,2,3,4,6}, b.fColumns(), "Should return the indices of non-full columns")
+	
+	// Arrange
+	b = Board{Fields: [nRows][nCols]color{
+		{none, none, none, none, none, none, none},
+		{none, red, none, none, blue, blue, none},
+		{none, red, none, none, none, blue, none},
+		{none, red, none, none, red, blue, blue},
+		{none, red, blue, none, red, blue, none},
+		{none, red, red, red, blue, red, none},
+	}}
+	// Act & Assert
+	require.Equal(t, []int {0,1,2,3,4,5,6}, b.fColumns(), "Should return the indices of non-full columns")
+	
+	// Arrange
+	b = Board{Fields: [nRows][nCols]color{
+		{red, red, red, red, red, red, red},
+		{none, red, none, none, blue, blue, none},
+		{none, red, none, none, none, blue, none},
+		{none, red, none, none, red, blue, blue},
+		{none, red, blue, none, red, blue, none},
+		{none, red, red, red, blue, red, none},
+	}}
+	// Act & Assert
+	require.Equal(t, []int {}, b.fColumns(), "Should return an empty slice")
 }
