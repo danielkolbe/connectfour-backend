@@ -91,9 +91,9 @@ func (b *Board) win() color {
 	return b.winner;
 } 
 
-// fColumns returns indices of the columns of the
+// freeColumns returns indices of the columns of the
 // board that are not already full
-func (b *Board) fColumns() []int {
+func (b *Board) freeColumns() []int {
 	c := []int{}
 	for i := 0; i < nCols; i++ {
 		if none == b.Fields[0][i] {
