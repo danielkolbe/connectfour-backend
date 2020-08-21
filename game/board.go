@@ -51,7 +51,8 @@ func newBoard() *Board {
 }
 
 // addChip adds a new chip to the Board inserting
-// it at the specified column. If the column is
+// it at the specified column. The color if the chip will be 
+// the color of the next turns chip. If the column is
 // full or out of bounds or the match has already a winner 
 // an customn error will be returned. 
 func (b *Board) addChip(column int) error {
