@@ -1,21 +1,54 @@
 package game
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 )
 
 var randomInt func (n int) int = rand.Intn
+const rep = 500
+
+type result struct {
+    column int
+    probability float64
+}
+
+func NextTurn (b *Board) int{
+	fColumns := b.freeColumns()
+	channel := make(chan result, len(fColumns))
+	for column := range(fColumns) {
+		c := newBoard()
+		copy(c.Fields[:], b.Fields[:])
+		c.addChip(column)
+		go func(c chan result, b *Board, column int) {
+			c <-result{probability: 1-empiricalLikelihoodOfWinning(b, rep), column: column}
+		}(channel, c, column)
+	}
+	bestColumn := -1
+	bestProb := -1.0
+	for i := 1; i <= len(fColumns); i++ {
+		result := <- channel
+		if result.probability > bestProb {
+			bestProb = result.probability
+			bestColumn = result.column
+		}	
+	}
+	close(channel)
+
+	return bestColumn;
+}
 
 func empiricalLikelihoodOfWinning(b *Board, rep int) float64 {
+
 	player := b.nextColor
 	count := 0
-	for i :=1; i<=rep; i++  {
+	for i :=1; i<=rep; i++ {
 		if player == randomMatch(*b) {
 			count ++
 		}
 	}
-
+	fmt.Println(float64(count)/float64(rep))
 	return float64(count)/float64(rep);
 }
 

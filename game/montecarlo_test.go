@@ -84,8 +84,8 @@ func TestEmpiricalLikelihoodOfWinnig(t *testing.T) {
 	}
 	// Act & Assert
 	result = empiricalLikelihoodOfWinning(b, 5000)
-	require.Greater(t, 1.0 - result, 0.51, "winning likelihood of red should be greater than 51% if red starts with a chip at the side")
-	require.Less(t, 1.0 - result, 0.65, "winning likelihood of red should be less than 65% if red starts with a chip at the side")
+	require.Greater(t, 1.0-result, 0.51, "winning likelihood of red should be greater than 51% if red starts with a chip at the side")
+	require.Less(t, 1.0-result, 0.65, "winning likelihood of red should be less than 65% if red starts with a chip at the side")
 
 	// Arrange
 	b = &Board{Fields: [nRows][nCols]color{
@@ -99,6 +99,61 @@ func TestEmpiricalLikelihoodOfWinnig(t *testing.T) {
 	}
 	// Act & Assert
 	result = empiricalLikelihoodOfWinning(b, 5000)
-	require.Greater(t, 1.0 - result, 0.92, "winning likelihood of red should be greater than 92% if red starts with a chip in the middle")
-	require.Less(t, 1.0 - result, 0.96, "winning likelihood of red should be less than 96% if red starts with a chip in the middle")
+	require.Greater(t, 1.0-result, 0.92, "winning likelihood of red should be greater than 92% if red starts with a chip in the middle")
+	require.Less(t, 1.0-result, 0.96, "winning likelihood of red should be less than 96% if red starts with a chip in the middle")
 }
+
+func TestNextTurn(t *testing.T) {
+	// Arrange
+	b := newBoard()
+	// Act
+	column := NextTurn(b)
+	// Assert
+	require.Equal(t, 3, column, "should return column 3 if empty board given (middle column is the best option for first turn)")
+
+	// Arrange
+	b = &Board{Fields: [nRows][nCols]color{
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, red},
+		{none, none, none, none, none, none, red},
+		{none, none, none, none, none, none, red},
+	}, winner: none, nextColor: blue,
+	}
+	// Act
+	column = NextTurn(b)
+	// Assert
+	require.Equal(t, 6, column, "should return turn that prevents oppenents immediate victory")
+
+	// Arrange
+	b = &Board{Fields: [nRows][nCols]color{
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+		{blue, blue, blue, none, none, none, none},
+	}, winner: none, nextColor: blue,
+	}
+	// Act
+	column = NextTurn(b)
+	// Assert
+	require.Equal(t, 3, column, "should return column so that ai immediately wins")
+
+	// Arrange
+	b = &Board{Fields: [nRows][nCols]color{
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+		{none, none, red, none, none, none, none},
+		{none, none, blue, blue, none, none, none},
+	}, winner: none, nextColor: red,
+	}
+	// Act
+	column = NextTurn(b)
+	// Assert
+	require.Equal(t, 4, column, "should return column 4 to prevent blue victory in two turns and choose the column that is closer to the middle (than column 1)")
+}
+	
