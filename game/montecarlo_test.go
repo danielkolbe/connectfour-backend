@@ -154,6 +154,6 @@ func TestNextTurn(t *testing.T) {
 	// Act
 	column = NextTurn(b)
 	// Assert
-	require.Equal(t, 4, column, "should return column 4 to prevent blue victory in two turns and choose the column that is closer to the middle (than column 1)")
+	require.Equal(t, 4, column, "should return column 4 to prevent blue players victory in two turns and choose the column that is closer to the middle (than column 1)")
 }
 	

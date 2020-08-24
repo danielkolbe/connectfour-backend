@@ -14,7 +14,7 @@ type result struct {
     probability float64
 }
 
-func NextTurn (b *Board) int{
+func NextTurn(b *Board) int{
 	fColumns := b.freeColumns()
 	channel := make(chan result, len(fColumns))
 	for column := range(fColumns) {
@@ -25,22 +25,19 @@ func NextTurn (b *Board) int{
 			c <-result{probability: 1-empiricalLikelihoodOfWinning(b, rep), column: column}
 		}(channel, c, column)
 	}
-	bestColumn := -1
-	bestProb := -1.0
+	bestResult := result{column: -1, probability: -1.0}
 	for i := 1; i <= len(fColumns); i++ {
 		result := <- channel
-		if result.probability > bestProb {
-			bestProb = result.probability
-			bestColumn = result.column
+		if result.probability > bestResult.probability {
+			bestResult = result
 		}	
 	}
 	close(channel)
 
-	return bestColumn;
+	return bestResult.column;
 }
 
 func empiricalLikelihoodOfWinning(b *Board, rep int) float64 {
-
 	player := b.nextColor
 	count := 0
 	for i :=1; i<=rep; i++ {
