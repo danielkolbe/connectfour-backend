@@ -1,7 +1,6 @@
 package game
 
 import (
-	"fmt"
 	"math/rand"
 	"time"
 )
@@ -18,6 +17,10 @@ type result struct {
     probability float64
 }
 
+// MC is used to implement the game.AI interface
+// using a MonteCarlo algorithm
+type MC struct {}
+
 // NextTurn performs a Monte Carlo algorithm to determine
 // which of the remaining non-full columns of the given board
 // the next chip should be inserted in order the maximize the chances
@@ -29,7 +32,7 @@ type result struct {
 // 3) Determine the ratio of won matches (won by the side that owns the chip inserted in step 1)
 // 4) Repeat step 2 and 3 for all remaining non-full columns
 // 5) Return the index of the column with the best ratio (highest empirical likelihood of winning) 
-func NextTurn(b *Board) int {
+func (mc MC) NextTurn(b *Board) int {
 	fColumns := b.freeColumns()
 	channel := make(chan result, len(fColumns))
 	for _, column := range(fColumns) {
@@ -53,7 +56,7 @@ func NextTurn(b *Board) int {
 }
 
 // empiricalLikelihoodOfWinning performs rep many random matches
-// all with the given board as initial board. Returns the (emperical)
+// all with the given board as initial board. Returns the (empirical)
 // likelihood of a victory of the player who's turn is next on the
 // given board. 
 func empiricalLikelihoodOfWinning(b *Board, rep int) float64 {
@@ -64,7 +67,6 @@ func empiricalLikelihoodOfWinning(b *Board, rep int) float64 {
 			count ++
 		}
 	}
-	fmt.Println(float64(count)/float64(rep))
 	return float64(count)/float64(rep);
 }
 

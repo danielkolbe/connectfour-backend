@@ -21,6 +21,13 @@ type Service interface {
 	Reset(string) (error)
 }
 
+// AI provides a collection of functions
+// used to compute artifical intelligence turns
+// based on a given game board.
+type AI interface {
+	NextTurn(b *Board) int
+}
+
 // Turn calls Board.addChip with the given column
 // on the Board with the given gameID. It returns an 
 // BoardDoesNotExistError if no such board exists.
