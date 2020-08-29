@@ -32,13 +32,13 @@ type result struct {
 func NextTurn(b *Board) int {
 	fColumns := b.freeColumns()
 	channel := make(chan result, len(fColumns))
-	for column := range(fColumns) {
-		c := newBoard()
-		copy(c.Fields[:], b.Fields[:])
-		c.addChip(column)
+	for _, column := range(fColumns) {
+		nb := newBoard()
+		copy(nb.Fields[:], b.Fields[:])
+		nb.addChip(column)
 		go func(c chan result, b *Board, column int) {
-			c <-result{probability: 1-empiricalLikelihoodOfWinning(b, rep), column: column}
-		}(channel, c, column)
+			c <- result{probability: 1- empiricalLikelihoodOfWinning(b, rep), column: column}
+		}(channel, nb, column)
 	}
 	bestResult := result{column: -1, probability: -1.0}
 	for i := 1; i <= len(fColumns); i++ {
