@@ -50,7 +50,7 @@ func setup () {
     gameServiceMock.On("Turn", 4,"324234-555").Return(nil);
     gameServiceMock.On("Turn", 3,"324234-555").Return(fmt.Errorf("error"));
     gameServiceMock.On("Turn", 5,"324234-555").Return(game.NewColumnIsFullError(5));
-    gameServiceMock.On("Turn", 6,"324234-555").Return(game.NewMatchIsOverError());
+    gameServiceMock.On("Turn", 6,"324234-555").Return(game.NewMatchIsOverError("message"));
     gameServiceMock.On("Turn", 10,"324234-555").Return(game.NewColumnIsOutOfBoundsError(10));
     gameServiceMock.On("Turn", 0,"324234-555").Return(game.NewBoardDoesNotExistError("324234-555"));
     gameServiceMock.On("Turn", 2,"324234-555").Panic("panic!")

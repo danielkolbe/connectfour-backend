@@ -26,9 +26,11 @@ func TestTurn(t *testing.T) {
 	require.NotEqual(t, nil, error, "should return an BoardDoesNotExistError")
 	require.Equal(t, NewBoardDoesNotExistError("id_1").Error(), error.Error(), "should return an BoardDoesNotExistError")
 	
-	// Act & Assert
+	// Arrange
 	(*testGameDb.games)["id_1"] = newBoard()
+	// Act
 	error=c.Turn(3, "id_1")
+	// Assert
 	require.Equal(t, nil, error, "should return an nil-error if board exists")
 	require.Equal(t,
 		"n n n n n n n \n"+
@@ -37,6 +39,58 @@ func TestTurn(t *testing.T) {
 			"n n n n n n n \n"+
 			"n n n n n n n \n"+
 			"n n n r n n n \n", (*testGameDb.games)["id_1"].String(), "should call addChip if board exists")
+}
+
+func TestTurnAI(t *testing.T) {
+	// Arrange
+	testGameDb.mutex.Lock()
+	defer func() {
+		gameDb = map[string] *Board{}
+		testGameDb.mutex.Unlock()
+	}()	
+	// Act & Assert
+	column, error := TurnAI("id_1", MC{} )
+	require.NotEqual(t, nil, error, "should return an BoardDoesNotExistError")
+	require.Equal(t, NewBoardDoesNotExistError("id_1").Error(), error.Error(), "should return an BoardDoesNotExistError")
+	require.Equal(t, -1, column, "should return -1 for column value if board does not exist")
+	
+	// Arange
+	(*testGameDb.games)["id_1"] = &Board{Fields: [nRows][nCols]color{
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+		{none, none, red, none, none, none, none},
+		{red, blue, blue, blue, blue, none, red},
+	}, winner: none, nextColor: red,
+	}
+	// Act
+	column, error = TurnAI("id_1", MC{} )
+	// Assert
+	require.Equal(t, NewMatchIsOverError("match has already a winner"), error, "should forward error from NextTurn method")
+	require.Equal(t, -1, column, "should return -1 for column value if error returned by NextTurn method")
+	
+	// Arange
+	(*testGameDb.games)["id_1"]  = &Board{Fields: [nRows][nCols]color{
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+		{none, none, red, none, none, none, none},
+		{none, none, blue, blue, none, none, none},
+	}, winner: none, nextColor: red,
+	}
+	// Act
+	column, error = TurnAI("id_1", MC{})
+	// Assert
+	require.Equal(t,
+		"n n n n n n n \n"+
+			"n n n n n n n \n"+
+			"n n n n n n n \n"+
+			"n n n n n n n \n"+
+			"n n r n n n n \n"+
+			"n n b b r n n \n", (*testGameDb.games)["id_1"].String(), "should add chip to column recommended by ai")
+	require.Equal(t, 4, column, "should the column recommended by ai")		
 }
 
 func TestBoard(t *testing.T) {
