@@ -45,7 +45,7 @@ func TestErrorHandlingMatchIsOver(t *testing.T) {
 	// Act
 	error := b.addChip(0)
 	// Assert
-	require.Equal(t, NewMatchIsOverError().Error(), error.Error(), "should return an MatchIsOverError if board has already a winner")
+	require.Equal(t, NewMatchIsOverError("match has already a winner").Error(), error.Error(), "should return an MatchIsOverError if board has already a winner")
 }
 
 func TestAddChip(t *testing.T) {

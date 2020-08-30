@@ -17,14 +17,11 @@ type result struct {
     probability float64
 }
 
-// MC is used to implement the game.AI interface
-// using a MonteCarlo algorithm
-type MC struct {}
-
 // NextTurn performs a Monte Carlo algorithm to determine
 // which of the remaining non-full columns of the given board
 // the next chip should be inserted in order the maximize the chances
-// to win for the side that chip belongs to.
+// to win for the side that chip belongs to. Returns an error if the given
+// board is not in an legal state for turn computation.
 // Steps:
 // 1) Choose a column that is not completely filled yet and insert the next chip
 // 2) Take the board with the inserted next chip and play rep many random games
@@ -32,13 +29,19 @@ type MC struct {}
 // 3) Determine the ratio of won matches (won by the side that owns the chip inserted in step 1)
 // 4) Repeat step 2 and 3 for all remaining non-full columns
 // 5) Return the index of the column with the best ratio (highest empirical likelihood of winning) 
-func (mc MC) NextTurn(b *Board) int {
+func (mc MC) NextTurn(b *Board) (int, error) {
 	fColumns := b.freeColumns()
+	if 0 == len(fColumns) {
+		return -1, NewMatchIsOverError("board is already full")
+	}
 	channel := make(chan result, len(fColumns))
 	for _, column := range(fColumns) {
 		nb := newBoard()
 		copy(nb.Fields[:], b.Fields[:])
-		nb.addChip(column)
+		err := nb.addChip(column)
+		if nil != err {
+			return -1, err
+		}
 		go func(c chan result, b *Board, column int) {
 			c <- result{probability: 1- empiricalLikelihoodOfWinning(b, rep), column: column}
 		}(channel, nb, column)
@@ -52,7 +55,7 @@ func (mc MC) NextTurn(b *Board) int {
 	}
 	close(channel)
 
-	return bestResult.column;
+	return bestResult.column, nil;
 }
 
 // empiricalLikelihoodOfWinning performs rep many random matches

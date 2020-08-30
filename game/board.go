@@ -60,7 +60,7 @@ func (b *Board) addChip(column int) error {
 	b.mutex.Lock()
 	defer b.mutex.Unlock()
 	if none != winner {
-		return NewMatchIsOverError()
+		return NewMatchIsOverError("match has already a winner")
 	}
 	if nCols-1 < column || 0 > column {
 		return NewColumnIsOutOfBoundsError(column)

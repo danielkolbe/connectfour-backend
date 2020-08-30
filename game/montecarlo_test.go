@@ -106,10 +106,10 @@ func TestNextTurn(t *testing.T) {
 	// Arrange
 	b := newBoard()
 	// Act
-	column := MC{}.NextTurn(b)
+	column, err := MC{}.NextTurn(b)
 	// Assert
 	require.Equal(t, 3, column, "should return column 3 if empty board given (middle column is the best option for first turn)")
-
+	require.Equal(t, nil, err, "error should be nil")
 	// Arrange
 	b = &Board{Fields: [nRows][nCols]color{
 		{none, none, none, none, none, none, none},
@@ -121,10 +121,10 @@ func TestNextTurn(t *testing.T) {
 	}, winner: none, nextColor: blue,
 	}
 	// Act
-	column = MC{}.NextTurn(b)
+	column, err = MC{}.NextTurn(b)
 	// Assert
 	require.Equal(t, 6, column, "should return turn that prevents oppenents immediate victory")
-
+	require.Equal(t, nil, err, "error should be nil")
 	// Arrange
 	b = &Board{Fields: [nRows][nCols]color{
 		{none, none, none, none, none, none, none},
@@ -136,9 +136,10 @@ func TestNextTurn(t *testing.T) {
 	}, winner: none, nextColor: blue,
 	}
 	// Act
-	column = MC{}.NextTurn(b)
+	column, err = MC{}.NextTurn(b)
 	// Assert
 	require.Equal(t, 3, column, "should return column so that ai immediately wins")
+	require.Equal(t, nil, err, "error should be nil")
 
 	// Arrange
 	b = &Board{Fields: [nRows][nCols]color{
@@ -151,38 +152,57 @@ func TestNextTurn(t *testing.T) {
 	}, winner: none, nextColor: red,
 	}
 	// Act
-	column = MC{}.NextTurn(b)
+	column, err = MC{}.NextTurn(b)
 	// Assert
 	require.Equal(t, 4, column, "should return column 4 to prevent blue players victory in two turns and choose the column that is closer to the middle (than column 1)")
-
-	// Arrange
-	b = &Board{Fields: [nRows][nCols]color{
-		{red, red, red, red, red, red, red},
-		{red, red, red, red, red, red, red},
-		{red, red, red, red, red, red, red},
-		{red, red, red, red, red, red, red},
-		{red, red, red, red, red, red, red},
-		{red, red, blue, blue, red, red, red},
-	}, winner: none, nextColor: red,
-	}
-	// Act
-	column = MC{}.NextTurn(b)
-	// Assert
-	require.Equal(t, -1, column, "should return -1 if board is already full")
-
+	require.Equal(t, nil, err, "error should be nil")
+	
 	// Arrange
 	b = &Board{Fields: [nRows][nCols]color{
 		{red, red, red, none, red, red, red},
-		{red, red, red, red, red, red, red},
-		{red, red, red, red, red, red, red},
-		{red, red, red, red, red, red, red},
-		{red, red, red, red, red, red, red},
 		{red, red, blue, blue, red, red, red},
+		{blue, red, blue, blue, red, red, red},
+		{red, blue, red, red, blue, blue, blue},
+		{blue, red, red, blue, red, red, red},
+		{blue, red, blue, blue, red, red, red},
 	}, winner: none, nextColor: red,
 	}
 	// Act
-	column = MC{}.NextTurn(b)
+	column, err = MC{}.NextTurn(b)
 	// Assert
 	require.Equal(t, 3, column, "should return last non-full column")
+	require.Equal(t, nil, err, "error should be nil")
+	
+	// Arrange
+	b = &Board{Fields: [nRows][nCols]color{
+		{red, red, red, blue, red, red, red},
+		{red, red, blue, blue, red, red, red},
+		{blue, red, blue, blue, red, red, red},
+		{red, blue, red, red, blue, blue, blue},
+		{blue, red, red, blue, red, red, red},
+		{blue, red, blue, blue, red, red, red},
+	}, winner: none, nextColor: red,
+	}
+	// Act
+	column, err = MC{}.NextTurn(b)
+	// Assert
+	require.Equal(t, -1, column, "should return -1 if board is already full")
+	require.Equal(t, NewMatchIsOverError("board is already full"), err, "should return a NewMatchIsOverError if the board is already full")
+
+	// Arrange
+	b = &Board{Fields: [nRows][nCols]color{
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+		{none, none, none, none, none, none, none},
+		{none, none, red, none, none, none, none},
+		{red, blue, blue, blue, blue, none, red},
+	}, winner: none, nextColor: red,
+	}
+	// Act
+	column, err = MC{}.NextTurn(b)
+	// Assert
+	require.Equal(t, -1, column, "should return -1 if the board has a winner already")
+	require.Equal(t, NewMatchIsOverError("match has already a winner"), err, "should return a NewMatchIsOverError if the board has a winner already")
 }
 	

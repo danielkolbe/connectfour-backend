@@ -20,8 +20,8 @@ type MatchIsOverError struct {
 	message string
 }
 
-func NewMatchIsOverError() error {
-	return &MatchIsOverError{fmt.Sprintf("match has already a winner")}
+func NewMatchIsOverError(message string) error {
+	return &MatchIsOverError{fmt.Sprintf(message)}
 }
 
 func (e *MatchIsOverError) Error() string {
