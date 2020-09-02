@@ -104,19 +104,19 @@ func TestNextColor(t *testing.T) {
 	// Arrange
 	b := newBoard()
 	// Assert
-	require.Equal(t, red, b.nextColor, fmt.Sprintf("Next color must be red but was %v", b.nextColor))
+	require.Equal(t, red, b.NextColor, fmt.Sprintf("Next color must be red but was %v", b.NextColor))
 
 	// Act & Assert
 	b.addChip(4)
-	require.Equal(t, blue, b.nextColor, fmt.Sprintf("Next color must be blue but was %v", b.nextColor))
+	require.Equal(t, blue, b.NextColor, fmt.Sprintf("Next color must be blue but was %v", b.NextColor))
 
 	// Act & Assert
 	b.addChip(3)
 
-	require.Equal(t, red, b.nextColor, fmt.Sprintf("Next color must be red but was %v", b.nextColor))
+	require.Equal(t, red, b.NextColor, fmt.Sprintf("Next color must be red but was %v", b.NextColor))
 	// Act & Assert
 	b.addChip(3)
-	require.Equal(t, blue, b.nextColor, fmt.Sprintf("Next color must be blue but was %v", b.nextColor))
+	require.Equal(t, blue, b.NextColor, fmt.Sprintf("Next color must be blue but was %v", b.NextColor))
 }
 
 func TestWin(t *testing.T) {

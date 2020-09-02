@@ -57,7 +57,7 @@ func TestRandomMatch(t *testing.T) {
 		{blue, blue, red, none, none, none, none},
 		{red, red, blue, none, none, none, none},
 		{blue, blue, blue, none, none, none, none},
-	}, winner: none, nextColor: red,
+	}, winner: none, NextColor: red,
 	}
 	// Act & Assert
 	require.Equal(t, randomMatch(b), red, "should return red")
@@ -79,7 +79,7 @@ func TestEmpiricalLikelihoodOfWinnig(t *testing.T) {
 		{none, none, none, none, none, none, none},
 		{none, none, none, none, none, none, none},
 		{none, none, none, none, none, none, red},
-	}, winner: none, nextColor: blue,
+	}, winner: none, NextColor: blue,
 	}
 	// Act & Assert
 	result = empiricalLikelihoodOfWinning(b, 5000)
@@ -94,7 +94,7 @@ func TestEmpiricalLikelihoodOfWinnig(t *testing.T) {
 		{none, none, none, none, none, none, none},
 		{none, none, none, none, none, none, none},
 		{none, none, none, red, none, none, none},
-	}, winner: none, nextColor: blue,
+	}, winner: none, NextColor: blue,
 	}
 	// Act & Assert
 	result = empiricalLikelihoodOfWinning(b, 5000)
@@ -118,7 +118,7 @@ func TestNextTurn(t *testing.T) {
 		{none, none, none, none, none, none, red},
 		{none, none, none, none, none, none, red},
 		{none, none, none, none, none, none, red},
-	}, winner: none, nextColor: blue,
+	}, winner: none, NextColor: blue,
 	}
 	// Act
 	column, err = MC{}.NextTurn(b)
@@ -133,7 +133,7 @@ func TestNextTurn(t *testing.T) {
 		{none, none, none, none, none, none, none},
 		{none, none, none, none, none, none, none},
 		{blue, blue, blue, none, none, none, none},
-	}, winner: none, nextColor: blue,
+	}, winner: none, NextColor: blue,
 	}
 	// Act
 	column, err = MC{}.NextTurn(b)
@@ -149,7 +149,7 @@ func TestNextTurn(t *testing.T) {
 		{none, none, none, none, none, none, none},
 		{none, none, red, none, none, none, none},
 		{none, none, blue, blue, none, none, none},
-	}, winner: none, nextColor: red,
+	}, winner: none, NextColor: red,
 	}
 	// Act
 	column, err = MC{}.NextTurn(b)
@@ -165,7 +165,7 @@ func TestNextTurn(t *testing.T) {
 		{red, blue, red, red, blue, blue, blue},
 		{blue, red, red, blue, red, red, red},
 		{blue, red, blue, blue, red, red, red},
-	}, winner: none, nextColor: red,
+	}, winner: none, NextColor: red,
 	}
 	// Act
 	column, err = MC{}.NextTurn(b)
@@ -181,7 +181,7 @@ func TestNextTurn(t *testing.T) {
 		{red, blue, red, red, blue, blue, blue},
 		{blue, red, red, blue, red, red, red},
 		{blue, red, blue, blue, red, red, red},
-	}, winner: none, nextColor: red,
+	}, winner: none, NextColor: red,
 	}
 	// Act
 	column, err = MC{}.NextTurn(b)
@@ -197,7 +197,7 @@ func TestNextTurn(t *testing.T) {
 		{none, none, none, none, none, none, none},
 		{none, none, red, none, none, none, none},
 		{red, blue, blue, blue, blue, none, red},
-	}, winner: none, nextColor: red,
+	}, winner: none, NextColor: red,
 	}
 	// Act
 	column, err = MC{}.NextTurn(b)

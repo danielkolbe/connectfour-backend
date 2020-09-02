@@ -63,7 +63,7 @@ func TestTurnAI(t *testing.T) {
 		{none, none, none, none, none, none, none},
 		{none, none, red, none, none, none, none},
 		{red, blue, blue, blue, blue, none, red},
-	}, winner: none, nextColor: red,
+	}, winner: none, NextColor: red,
 	}
 	// Act
 	column, error = c.TurnAI("id_1", MC{} )
@@ -79,7 +79,7 @@ func TestTurnAI(t *testing.T) {
 		{none, none, none, none, none, none, none},
 		{none, none, red, none, none, none, none},
 		{none, none, blue, blue, none, none, none},
-	}, winner: none, nextColor: red,
+	}, winner: none, NextColor: red,
 	}
 	// Act
 	column, error = c.TurnAI("id_1", MC{})

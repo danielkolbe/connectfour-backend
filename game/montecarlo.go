@@ -63,7 +63,7 @@ func (mc MC) NextTurn(b *Board) (int, error) {
 // likelihood of a victory of the player who's turn is next on the
 // given board. 
 func empiricalLikelihoodOfWinning(b *Board, rep int) float64 {
-	player := b.nextColor
+	player := b.NextColor
 	count := 0
 	for i :=1; i<=rep; i++ {
 		if player == randomMatch(*b) {

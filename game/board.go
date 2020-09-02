@@ -9,7 +9,7 @@ import (
 // (all added chips and the color of the next chip) .
 type Board struct {
 	Fields    [nRows][nCols]color
-	nextColor color
+	NextColor color
 	winner color
 	mutex sync.Mutex
 }
@@ -47,7 +47,7 @@ func (c color) String() string {
 // newBoard returns a pointer to a new Board instance.
 // The nextColor field will be pre-set to red.
 func newBoard() *Board {
-	return &Board{Fields: [nRows][nCols]color{}, nextColor: red, winner: none}
+	return &Board{Fields: [nRows][nCols]color{}, NextColor: red, winner: none}
 }
 
 // addChip adds a new chip to the Board inserting
@@ -70,11 +70,11 @@ func (b *Board) addChip(column int) error {
 	}
 	for row := len(b.Fields) - 1; row >= 0; row-- {
 		if none == b.Fields[row][column] {
-			b.Fields[row][column] = b.nextColor
+			b.Fields[row][column] = b.NextColor
 			break
 		}
 	}
-	b.nextColor = (2 - (b.nextColor - 1))
+	b.NextColor = (2 - (b.NextColor - 1))
 	
 	return nil
 }
