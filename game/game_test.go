@@ -48,8 +48,9 @@ func TestTurnAI(t *testing.T) {
 		gameDb = map[string] *Board{}
 		testGameDb.mutex.Unlock()
 	}()	
+	c := CFour{}
 	// Act & Assert
-	column, error := TurnAI("id_1", MC{} )
+	column, error := c.TurnAI("id_1", MC{} )
 	require.NotEqual(t, nil, error, "should return an BoardDoesNotExistError")
 	require.Equal(t, NewBoardDoesNotExistError("id_1").Error(), error.Error(), "should return an BoardDoesNotExistError")
 	require.Equal(t, -1, column, "should return -1 for column value if board does not exist")
@@ -65,7 +66,7 @@ func TestTurnAI(t *testing.T) {
 	}, winner: none, nextColor: red,
 	}
 	// Act
-	column, error = TurnAI("id_1", MC{} )
+	column, error = c.TurnAI("id_1", MC{} )
 	// Assert
 	require.Equal(t, NewMatchIsOverError("match has already a winner"), error, "should forward error from NextTurn method")
 	require.Equal(t, -1, column, "should return -1 for column value if error returned by NextTurn method")
@@ -81,7 +82,7 @@ func TestTurnAI(t *testing.T) {
 	}, winner: none, nextColor: red,
 	}
 	// Act
-	column, error = TurnAI("id_1", MC{})
+	column, error = c.TurnAI("id_1", MC{})
 	// Assert
 	require.Equal(t,
 		"n n n n n n n \n"+

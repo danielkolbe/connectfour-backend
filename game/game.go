@@ -12,10 +12,14 @@ type MC struct {}
 // Service provides a collection of functions
 // that can perform actions on a game.Board.
 type Service interface {
-	// Perform the next turn on the gameboard with the given id
+	// TurnAI performs next turn on the gameboard with the given id
+	// using an artificial intelligence algorithm. Returns column
+	// where the next chip was inserted or an error.
+	TurnAI(gameID string, ai AI) (int, error)
+	// Turn performs the next turn on the gameboard with the given id
 	// on the column with the given number.
 	Turn(int, string) error
-	// Returns the game board for the given id or a new one that
+	// Board returns the game board for the given id or a new one that
 	// can be referenced with the id on later calls.
 	Board(string) Board
 	// Winner returns the winning color for the board
@@ -40,7 +44,7 @@ type AI interface {
 // returns the column index. It returns an BoardDoesNotExistError
 // if no board matching the given gameID exists, a specific error if
 // the board is not in an legal state for such an operation.
-func TurnAI(gameID string, ai AI) (int, error) {
+func (c CFour) TurnAI(gameID string, ai AI) (int, error) {
 	b, ok := gameDb[gameID]
 	if !ok {
 		return -1, NewBoardDoesNotExistError(gameID)
@@ -76,7 +80,6 @@ func (c CFour) Board(gameID string) Board {
 		b = newBoard()
 		gameDb[gameID] = b
 	}
-	
 	return *b
 }
 

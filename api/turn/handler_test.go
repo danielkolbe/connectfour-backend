@@ -32,6 +32,10 @@ func (mock *GameServiceMock) Winner(gameID string) (string, error) {
 	return "" , nil
 }
 
+func (mock *GameServiceMock) TurnAI(gameID string, ai game.AI) (int, error) {
+	fmt.Println("The number you have dialed is not available.")
+	return -1, nil
+}
 
 func (mock *GameServiceMock) Reset(gameID string) error {
     fmt.Println("The number you have dialed is not available.")
