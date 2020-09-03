@@ -32,6 +32,10 @@ func (mock *GameServiceMock) Winner(gameID string) (string, error) {
 	return "" , nil
 }
 
+func (mock *GameServiceMock) TurnAI(gameID string, ai game.AI) (int, error) {
+	fmt.Println("The number you have dialed is not available.")
+	return -1, nil
+}
 
 func (mock *GameServiceMock) Reset(gameID string) error {
     fmt.Println("The number you have dialed is not available.")
@@ -50,7 +54,7 @@ func setup () {
     gameServiceMock.On("Turn", 4,"324234-555").Return(nil);
     gameServiceMock.On("Turn", 3,"324234-555").Return(fmt.Errorf("error"));
     gameServiceMock.On("Turn", 5,"324234-555").Return(game.NewColumnIsFullError(5));
-    gameServiceMock.On("Turn", 6,"324234-555").Return(game.NewMatchIsOverError());
+    gameServiceMock.On("Turn", 6,"324234-555").Return(game.NewMatchIsOverError("match has already a winner"));
     gameServiceMock.On("Turn", 10,"324234-555").Return(game.NewColumnIsOutOfBoundsError(10));
     gameServiceMock.On("Turn", 0,"324234-555").Return(game.NewBoardDoesNotExistError("324234-555"));
     gameServiceMock.On("Turn", 2,"324234-555").Panic("panic!")
@@ -182,6 +186,6 @@ func TestHandler(t *testing.T) {
      // Assert
      bodyBytes, _ = ioutil.ReadAll(rr.Body)
      bodyString = string(bodyBytes)
-     require.Equal(t, http.StatusNotFound, rr.Code, fmt.Sprintf("should return http 400 if board does not exist"))
+     require.Equal(t, http.StatusNotFound, rr.Code, fmt.Sprintf("should return http 404 if board does not exist"))
      require.Equal(t, "no board created, please perform a GET request on /board first", bodyString, fmt.Sprintf("should add the correct error to response"))
 }

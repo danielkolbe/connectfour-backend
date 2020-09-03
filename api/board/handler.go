@@ -36,7 +36,6 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	if "application/json" == req.Header.Get("Content-type") {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(board)
-
 		return
 	}
 	w.Write([]byte(board.String()))

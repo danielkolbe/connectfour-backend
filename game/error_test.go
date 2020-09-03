@@ -6,7 +6,7 @@ import (
 )
 func TestErrors(t *testing.T) {
 	// Act & Assert
-	require.Equal(t, "match has already a winner", NewMatchIsOverError().Error(), "should contain the correct error message")
+	require.Equal(t, "message", NewMatchIsOverError("message").Error(), "should contain the correct error message")
 	// Act & Assert
 	require.Equal(t, "board with gameID <id_1> does not exist", NewBoardDoesNotExistError("id_1").Error(), "should contain the correct error message")
 	// Act & Assert

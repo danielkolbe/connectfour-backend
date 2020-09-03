@@ -45,7 +45,7 @@ func TestErrorHandlingMatchIsOver(t *testing.T) {
 	// Act
 	error := b.addChip(0)
 	// Assert
-	require.Equal(t, NewMatchIsOverError().Error(), error.Error(), "should return an MatchIsOverError if board has already a winner")
+	require.Equal(t, NewMatchIsOverError("match has already a winner").Error(), error.Error(), "should return an MatchIsOverError if board has already a winner")
 }
 
 func TestAddChip(t *testing.T) {
@@ -104,19 +104,19 @@ func TestNextColor(t *testing.T) {
 	// Arrange
 	b := newBoard()
 	// Assert
-	require.Equal(t, red, b.nextColor, fmt.Sprintf("Next color must be red but was %v", b.nextColor))
+	require.Equal(t, red, b.NextColor, fmt.Sprintf("Next color must be red but was %v", b.NextColor))
 
 	// Act & Assert
 	b.addChip(4)
-	require.Equal(t, blue, b.nextColor, fmt.Sprintf("Next color must be blue but was %v", b.nextColor))
+	require.Equal(t, blue, b.NextColor, fmt.Sprintf("Next color must be blue but was %v", b.NextColor))
 
 	// Act & Assert
 	b.addChip(3)
 
-	require.Equal(t, red, b.nextColor, fmt.Sprintf("Next color must be red but was %v", b.nextColor))
+	require.Equal(t, red, b.NextColor, fmt.Sprintf("Next color must be red but was %v", b.NextColor))
 	// Act & Assert
 	b.addChip(3)
-	require.Equal(t, blue, b.nextColor, fmt.Sprintf("Next color must be blue but was %v", b.nextColor))
+	require.Equal(t, blue, b.NextColor, fmt.Sprintf("Next color must be blue but was %v", b.NextColor))
 }
 
 func TestWin(t *testing.T) {
@@ -129,7 +129,7 @@ func TestWin(t *testing.T) {
 	b = &Board{Fields: [nRows][nCols]color{}, winner: blue}
 	// Assert
 	require.Equal(t, blue, b.winner, "Should return winner field if winner is already set")
-	
+
 	// Arrange
 	b = &Board{Fields: [nRows][nCols]color{
 		{none, none, none, blue, none, none, none},
@@ -143,4 +143,42 @@ func TestWin(t *testing.T) {
 	// Assert
 	require.Equal(t, red, b.win(), "Should return winner from win method if field is none")
 	require.Equal(t, red, b.winner, "Should set winner field to red")
+}
+
+func TestFreeColumns(t *testing.T) {
+	// Arrange
+	b := Board{Fields: [nRows][nCols]color{
+		{none, red, none, none, none, blue, none},
+		{none, red, none, none, blue, blue, none},
+		{none, red, none, none, none, blue, none},
+		{none, red, none, none, red, blue, blue},
+		{none, red, blue, none, red, blue, none},
+		{none, red, red, red, blue, red, none},
+	}}
+	// Act & Assert
+	require.Equal(t, []int {0,2,3,4,6}, b.freeColumns(), "Should return the indices of non-full columns")
+	
+	// Arrange
+	b = Board{Fields: [nRows][nCols]color{
+		{none, none, none, none, none, none, none},
+		{none, red, none, none, blue, blue, none},
+		{none, red, none, none, none, blue, none},
+		{none, red, none, none, red, blue, blue},
+		{none, red, blue, none, red, blue, none},
+		{none, red, red, red, blue, red, none},
+	}}
+	// Act & Assert
+	require.Equal(t, []int {0,1,2,3,4,5,6}, b.freeColumns(), "Should return the indices of non-full columns")
+	
+	// Arrange
+	b = Board{Fields: [nRows][nCols]color{
+		{red, red, red, red, red, red, red},
+		{none, red, none, none, blue, blue, none},
+		{none, red, none, none, none, blue, none},
+		{none, red, none, none, red, blue, blue},
+		{none, red, blue, none, red, blue, none},
+		{none, red, red, red, blue, red, none},
+	}}
+	// Act & Assert
+	require.Equal(t, []int {}, b.freeColumns(), "Should return an empty slice")
 }

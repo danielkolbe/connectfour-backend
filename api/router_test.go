@@ -91,4 +91,20 @@ func TestRouter(t *testing.T) {
 	NewRouter().ServeHTTP(rr, req)
 	// Assert
 	require.Equal(t, http.StatusMethodNotAllowed, rr.Code, "should return http status 405 if method not equal to GET" )
+
+	// Arrange
+	rr = httptest.NewRecorder()
+    req, _ = http.NewRequest("PATCH", "/ai/montecarlo", bytes.NewReader(nil))
+	// Act
+	NewRouter().ServeHTTP(rr, req)
+	// Assert
+	require.Equal(t, http.StatusNotFound, rr.Code, "should return http status 404" )
+
+	// Arrange
+	rr = httptest.NewRecorder()
+	req, _ = http.NewRequest("POST", "/ai/montecarlo", nil)	
+	// Act
+	NewRouter().ServeHTTP(rr, req)
+	// Assert
+	require.Equal(t, http.StatusMethodNotAllowed, rr.Code, "should return http status 405 if method not equal to PATCH" )
 }
