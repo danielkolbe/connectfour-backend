@@ -47,18 +47,18 @@ func winVertical(b *Board) color {
 }
 
 // winDiagonal returns a color if four contiguous fields of the
-// board of that color in a vertical line exist. It returns none otherwise.
+// board of that color in a diaginal line exist. It returns none otherwise.
 // If this condition applies for both colors one of both will be returned.
 func winDiagonal(b *Board) color {
 	color := none
 	for y := 0; y <= len(b.Fields)-4; y++ {
-		color = hasFour(diagonal(&b.Fields, y, 0))
+		color = hasFour(diagonalTopLeftBottomRight(&b.Fields, y, 0))
 		if none != color {
 			return color
 		}
 	}
 	for x := 0; x <= len(b.Fields[0])-4; x++ {
-		color = hasFour(diagonal(&b.Fields, 0, x))
+		color = hasFour(diagonalTopLeftBottomRight(&b.Fields, 0, x))
 		if none != color {
 			return color
 		}
@@ -97,8 +97,9 @@ func column(fields *[nRows][nCols]color, index int) []color {
 	return column
 }
 
-// diagonal returns the diagonal of the given array starting at (row, column)
-func diagonal(fields *[nRows][nCols]color, row int, column int) []color {
+// diagonalTopLeftBottomRight returns the diagonal of the given array starting at (row, column)
+// leading to the right lower corner
+func diagonalTopLeftBottomRight(fields *[nRows][nCols]color, row int, column int) []color {
 	diagonal := make([]color, 0)
 	x := column
 	for y := row; y < len(fields); y++ {
@@ -109,3 +110,18 @@ func diagonal(fields *[nRows][nCols]color, row int, column int) []color {
 	}
 	return diagonal
 }
+
+// diagonalTopRightBottomLeft returns the diagonal of the given array starting at (row, column)
+// leading to the left lower corner
+func diagonalTopRightBottomLeft(fields *[nRows][nCols]color, row int, column int) []color {
+	diagonal := make([]color, 0)
+	x := column
+	for y := row; y < len(fields); y++ {
+		if x >= 0 {
+			diagonal = append(diagonal, fields[y][x])
+		}
+		x--
+	}
+	return diagonal
+}
+
