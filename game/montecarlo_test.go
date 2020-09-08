@@ -154,15 +154,15 @@ func TestNextTurn(t *testing.T) {
 	// Act
 	column, err = MC{}.NextTurn(b)
 	// Assert
-	require.Equal(t, 4, column, "should return column 4 to prevent blue players victory in two turns and choose the column that is closer to the middle (than column 1)")
+	require.Contains(t, [2]int{1, 4}, column, "should return column 1 or column to prevent blue players victory in two turns.")
 	require.Equal(t, nil, err, "error should be nil")
 	
 	// Arrange
 	b = &Board{Fields: [nRows][nCols]color{
 		{red, red, red, none, red, red, red},
 		{red, red, blue, blue, red, red, red},
-		{blue, red, blue, blue, red, red, red},
-		{red, blue, red, red, blue, blue, blue},
+		{blue, red, blue, blue,none, red, red},
+		{red, none, red, red, blue, blue, blue},
 		{blue, red, red, blue, red, red, red},
 		{blue, red, blue, blue, red, red, red},
 	}, winner: none, NextColor: red,

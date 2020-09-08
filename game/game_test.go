@@ -78,7 +78,7 @@ func TestTurnAI(t *testing.T) {
 		{none, none, none, none, none, none, none},
 		{none, none, none, none, none, none, none},
 		{none, none, red, none, none, none, none},
-		{none, none, blue, blue, none, none, none},
+		{blue, blue, blue, none, none, none, none},
 	}, winner: none, NextColor: red,
 	}
 	// Act
@@ -90,8 +90,8 @@ func TestTurnAI(t *testing.T) {
 			"n n n n n n n \n"+
 			"n n n n n n n \n"+
 			"n n r n n n n \n"+
-			"n n b b r n n \n", (*testGameDb.games)["id_1"].String(), "should add chip to column recommended by ai")
-	require.Equal(t, 4, column, "should the column recommended by ai")		
+			"b b b r n n n \n", (*testGameDb.games)["id_1"].String(), "should add chip to column recommended by ai")
+	require.Equal(t, 3, column, "should the column recommended by ai")		
 }
 
 func TestBoard(t *testing.T) {

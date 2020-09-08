@@ -47,7 +47,7 @@ func winVertical(b *Board) color {
 }
 
 // winDiagonal returns a color if four contiguous fields of the
-// board of that color in a diaginal line exist. It returns none otherwise.
+// board of that color in a diagonal line exist. It returns none otherwise.
 // If this condition applies for both colors one of both will be returned.
 func winDiagonal(b *Board) color {
 	color := none
@@ -59,6 +59,20 @@ func winDiagonal(b *Board) color {
 	}
 	for x := 0; x <= len(b.Fields[0])-4; x++ {
 		color = hasFour(diagonalTopLeftBottomRight(&b.Fields, 0, x))
+		if none != color {
+			return color
+		}
+	}
+
+	for y := 0; y <= len(b.Fields)-4; y++ {
+		color = hasFour(diagonalTopRightBottomLeft(&b.Fields, y, len(b.Fields[0])-1))
+		if none != color {
+			return color
+		}
+	}
+
+	for x := 3; x < len(b.Fields[0]); x++ {
+		color = hasFour(diagonalTopRightBottomLeft(&b.Fields, 0, x))
 		if none != color {
 			return color
 		}
