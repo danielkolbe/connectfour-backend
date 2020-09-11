@@ -81,7 +81,8 @@ func TestHandler(t *testing.T) {
 	// Assert
 	require.Equal(t, http.StatusOK, rr.Code, fmt.Sprintf("should return http 200 if request is valid"))
 	body, _ := ioutil.ReadAll(rr.Body)
-	require.Equal(t, "{\"Column\":3}\n", string(body), fmt.Sprintf("should return http 200 if request is valid"))
+	require.Equal(t, "{\"Column\":3}\n", string(body), fmt.Sprintf("should return the correct response body"))
+	require.Equal(t, "application/json", rr.Header().Get("Content-Type"), fmt.Sprintf("header should be set to content-type application/json"))
 
 	// Arrange
 	req, _ = http.NewRequest("", "", bytes.NewReader(nil))

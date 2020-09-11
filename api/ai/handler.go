@@ -57,6 +57,7 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		fmt.Fprint(w, err)
 		return
 	}
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(AITurn{col})
 }
 

@@ -70,7 +70,8 @@ func TestHandler(t *testing.T) {
 	err := json.Unmarshal(body, &board)
 	// Assert
 	require.Equal(t, http.StatusOK, rr.Code, fmt.Sprintf("should return http 200 if request is valid"))
-    require.Equal(t, nil, err, fmt.Sprintf("should return fields of board as json if content type is application/json"))
+	require.Equal(t, nil, err, fmt.Sprintf("should return fields of board as json if content type is application/json"))
+	require.Equal(t, "application/json", rr.Header().Get("Content-Type"), fmt.Sprintf("header should be set to content-type application/json"))
     
     // Arrange
 	req, _ = http.NewRequest("", "", nil)
