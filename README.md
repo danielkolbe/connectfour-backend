@@ -11,6 +11,8 @@ starts a server at localhost:8080. The server stores the running matches in-memo
 
 ## API
 
+The all game boards hold by the backend have a fixed size of 6 rows and 7 columns. The first turn is always done by the red player.
+
 **Board**
 ----
   Used to retrieve the current game board. If no cookie is attached to the request a new game board will be returned and a new cookie (that contains the game id of the new board) will be added to the response. The game board can be requested as either text or json representation. Text: n=empty field, r=red chip, b=blue chip  JSON: 0=empty field, 1=blue, 2=red (or however you want to define it). 
@@ -38,7 +40,7 @@ n n n r n n n
 
 **Sample Call:**
  
- Gets a new game board and saves the new cookie to temp/cookies.
+ Gets a new game board and saves the new cookie to temp/cookies (file must be created before).
  
   ```console
   curl -c temp/cookies localhost:8080/board -H "Content-Type: text/plain"
@@ -50,7 +52,7 @@ n n n r n n n
   curl -b temp/cookies localhost:8080/board -H "Content-Type: text/plain"
   ```
 
-  **Request:**
+**Request:**
 ```json
  GET /board HTTP/1.1
  Host: localhost:8080
@@ -64,7 +66,7 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 Content-Length: 123
 
-{"Fields":[[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,1,0,0,0],[0,0,0,2,0,0,0]],"NextColor":2}
+{"Fields":[[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,1,0,0,0],[0,0,0,2,0,0,0]], "NextColor":2}
 
 ```
 
@@ -72,4 +74,65 @@ Content-Length: 123
 
   ```console
   curl -b temp/cookies localhost:8080/board -H "Content-Type: application/json"
+  ```
+
+**Turn**
+----
+ Used to perform the next turn on the board. The request body must include the index (0-6) of the column the next chip is to be inserted at (see below). Use GET /board with content-type application/json as detailed above to retrieve the status of the current board and the next color. If no cookie is attached to the request or the gameID does not match a game board a http 400 is returned. Use GET /board to get a new board/cookie in that case.
+
+**Request:**
+```json
+PATCH /turn HTTP/1.1
+Host: localhost:8080
+Cookie: gameID=a8b83d5e-39f7-47ec-acb9-5105b2a5c890
+Content-Type: application/json
+{"column": 3}
+```
+
+**Successful Response:**
+```json
+HTTP/1.1 200 OK
+Content-Length: 0
+```
+
+**Failed Response:**
+```json
+HTTP/1.1 409 Conflict
+Content-Length: 16
+Content-Type: text/plain; charset=utf-8
+
+column 3 is full
+``` 
+
+**Failed Response:**
+```json
+HTTP/1.1 409 Conflict
+Content-Length: 26
+Content-Type: text/plain; charset=utf-8
+
+match has already a winner
+``` 
+
+**Failed Response:**
+```json
+HTTP/1.1 400 Bad Request
+Content-Length: 30
+Content-Type: text/plain; charset=utf-8
+
+column 8 is out of bounds: 0-6
+``` 
+
+**Failed Response:**
+```json
+HTTP/1.1 404 Not Found
+Content-Length: 62
+Content-Type: text/plain; charset=utf-8
+
+no board created, please perform a GET request on /board first
+``` 
+
+**Sample Call:**
+
+  ```console
+  curl -b temp/cookies -X PATCH localhost:8080/turn -H "--Content-Type: application/json" --data-raw '{"column": 3}'
   ```
