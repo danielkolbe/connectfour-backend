@@ -215,3 +215,36 @@ no board created, please perform a GET request on /board first
   ```console
   curl -b temp/cookies localhost:8080/winner
   ```
+
+### **Reset**
+----
+ Used to request a reset of a board to its initial state. If no cookie was attached to the request or the gameID does not match a game board a http 404 will be returned. Use GET /board to get a new board/cookie in that case.
+
+**Request:**
+```json
+PATCH /reset HTTP/1.1
+Host: localhost:8080
+Cookie: gameID=aaa76566-8899-4958-8e10-84ea83b949f7
+```
+
+**Successful Response:**
+```json
+HTTP/1.1 200 OK
+Content-Length: 0
+```
+
+**Failed Response:**
+```json
+HTTP/1.1 404 Not Found
+Content-Length: 62
+Content-Type: text/plain; charset=utf-8
+
+no board created, please perform a GET request on /board first
+``` 
+
+**Sample Call:**
+
+  ```console
+  curl -b temp/cookies -X PATCH localhost:8080/reset
+  ```
+
