@@ -11,11 +11,11 @@ Starts a server at localhost:8080. The server stores the running matches in-memo
 
 ## **API**
 
-The all game boards hold by the backend have a fixed size of 6 rows and 7 columns. The first turn is always done by the red player.
+The all game boards hold by the backend have a fixed size of 6 rows and 7 columns. (Without loss of generality) the first turn is always done by the red player.
 
 ### **Board**
 ----
-  Used to retrieve the current game board. If no cookie is attached to the request a new game board will be returned and a new cookie (that contains the game id of the new board) will be added to the response. The game board can be requested as either text or json representation. Text: n=empty field, r=red chip, b=blue chip  JSON: 0=empty field, 1=blue, 2=red (or however you want to define it). 
+  Used to retrieve a game board. If no cookie was attached to the request a new game board will be returned and a new cookie (that contains the game id of the new board) will be added to the response. The game board can be requested as either text or json representation. Text: n=empty field, r=red chip, b=blue chip  JSON: 0=empty field, 1=blue, 2=red (or however you want to define it). 
 
 **Request:**
 ```json
@@ -78,7 +78,7 @@ Content-Length: 123
 
 ### **Turn**
 ----
- Used to perform the next turn on the board. The request body must include the index (0-6) of the column the next chip is to be inserted at (see below). Use GET /board with content-type application/json as detailed above to retrieve the status of the current board and the next color. If no cookie is attached to the request or the gameID does not match a game board a http 400 is returned. Use GET /board to get a new board/cookie in that case.
+ Used to perform the next turn on a board. The request body must include the index (0-6) of the column the next chip is to be inserted at (see below). Use GET /board with content-type application/json as detailed above to retrieve the status of the current board and the next color. If no cookie was attached to the request or the gameID does not match a game board a http 404 will be returned. Use GET /board to get a new board/cookie in that case.
 
 **Request:**
 ```json
@@ -139,7 +139,7 @@ column 8 is out of bounds: 0-6
 
 ### **AI**
 ----
- Used to perform the next turn on the board using artificial intelligence. At the moment a monte carlo algorithm with a fixed number of repetitions = 500 is the only avaible choice. Returns the column where the next chip was inserted at. A subsequent GET /board request (see above) will return the updated game board. If no cookie is attached to the request or the gameID does not match a game board a http 400 is returned. Use GET /board to get a new board/cookie in that case.
+ Used to perform the next turn on a board using artificial intelligence. At the moment a monte carlo algorithm with a fixed number of repetitions = 500 is the only avaible choice. Returns the column where the next chip was inserted at. A subsequent GET /board request (see above) will return the updated game board. If no cookie was attached to the request or the gameID does not match a game board a http 404 will be returned. Use GET /board to get a new board/cookie in that case.
 
 **Request:**
 ```json
@@ -181,4 +181,37 @@ match has already a winner
   curl -b temp/cookies -X PATCH localhost:8080/ai/montecarlo
   ```
 
+### **Winner**
+----
+ Used to request the winner of a match. Returns either n (no winner yet), b (blue has won) or r (red has won). If no cookie was attached to the request or the gameID does not match a game board a http 404 will be returned. Use GET /board to get a new board/cookie in that case.
 
+**Request:**
+```json
+GET /winner HTTP/1.1
+Host: localhost:8080
+Cookie: gameID=ae6b3fdc-2eb0-445a-8232-fef417b22d99
+```
+
+**Successful Response:**
+```json
+HTTP/1.1 200 OK
+Content-Length: 1
+Content-Type: text/plain; charset=utf-8
+
+b
+```
+
+**Failed Response:**
+```json
+HTTP/1.1 404 Not Found
+Content-Length: 62
+Content-Type: text/plain; charset=utf-8
+
+no board created, please perform a GET request on /board first
+``` 
+
+**Sample Call:**
+
+  ```console
+  curl -b temp/cookies localhost:8080/winner
+  ```
