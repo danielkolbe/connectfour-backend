@@ -9,7 +9,7 @@ daniel@r2d2: ~/projects/connect-four$ go run .
 or
 
 ```console
-daniel@r2d2: ~/connectfour.exe
+daniel@r2d2: ~/$ connectfour.exe
 ```
 
 Starts a server at localhost:8080. The server stores the running matches in-memory so that all progress will be lost when restarting. The application uses cookies to re-indentify clients. The cookie contains a uuid that is used to save/retrieve the game board that describes the current state of the running match to/from the in-memory database. To start a match use a client that can manage cookies like cURL or postman.
