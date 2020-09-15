@@ -66,7 +66,7 @@ func TestFindfindwinner(t *testing.T) {
 	}
 	// Act & Assert
 	require.Equal(t, none, findwinner(&b), "should return none (no win)")
-	
+
 }
 
 func TestWinDiagonal(t *testing.T) {
@@ -163,7 +163,7 @@ func TestWinDiagonal(t *testing.T) {
 
 	// Arrange
 	b = Board{Fields: [nRows][nCols]color{
-		{none, none, none, red, none,red, none},
+		{none, none, none, red, none, red, none},
 		{none, none, red, none, blue, none, none},
 		{none, red, red, blue, red, none, none},
 		{red, none, blue, none, none, none, none},
@@ -176,7 +176,7 @@ func TestWinDiagonal(t *testing.T) {
 
 	// Arrange
 	b = Board{Fields: [nRows][nCols]color{
-		{none, none, none,red, red, none,blue},
+		{none, none, none, red, red, none, blue},
 		{red, none, none, none, blue, blue, none},
 		{red, none, red, none, blue, blue, none},
 		{red, blue, none, blue, none, none, none},
@@ -223,7 +223,7 @@ func TestWinHorizontal(t *testing.T) {
 		{none, red, none, blue, none, none, none},
 		{none, red, none, none, blue, none, none},
 		{none, red, none, none, none, blue, none},
-		{none, red, none, none, none, none,  blue},
+		{none, red, none, none, none, none, blue},
 		{none, red, blue, none, blue, none, none},
 		{none, red, red, red, blue, red, none},
 	},
@@ -274,10 +274,10 @@ func TestWinVertical(t *testing.T) {
 
 	// Arrange
 	b = Board{Fields: [nRows][nCols]color{
-		{none, none, none,  blue, none, none, none},
-		{none, none, none, none,  blue, none, none},
-		{none, red, none, none, none,  blue, none},
-		{none, red, none, none, none, none,  blue},
+		{none, none, none, blue, none, none, none},
+		{none, none, none, none, blue, none, none},
+		{none, red, none, none, none, blue, none},
+		{none, red, none, none, none, none, blue},
 		{none, red, blue, none, blue, none, none},
 		{none, red, red, red, blue, red, none},
 	},
@@ -307,10 +307,10 @@ func TestDiagonalTopLeftBottomRight(t *testing.T) {
 		{none, blue, none, red, none, red, blue},
 		{none, blue, none, none, none, none, red},
 		{none, blue, none, none, none, red, none},
-		{none, red,  red,  red,  red, blue,  none},
+		{none, red, red, red, red, blue, none},
 	},
 	}
-	// Act & Assert 
+	// Act & Assert
 	require.Equal(t, []color{none, blue, none, none, none, blue}, diagonalTopLeftBottomRight(&b.Fields, 0, 0), "should return the diagonal with given starting point")
 	require.Equal(t, []color{none, blue, none, none, red}, diagonalTopLeftBottomRight(&b.Fields, 1, 0), "should return the diagonal with given starting point")
 	require.Equal(t, []color{none, blue, none, red}, diagonalTopLeftBottomRight(&b.Fields, 2, 0), "should return the diagonal with given starting point")
@@ -336,10 +336,10 @@ func TestDiagonalTopRightBottomLeft(t *testing.T) {
 		{none, blue, none, red, none, red, blue},
 		{none, blue, none, none, none, none, red},
 		{none, blue, none, none, none, red, none},
-		{none, red,  red,  red,  red, blue,  none},
+		{none, red, red, red, red, blue, none},
 	},
 	}
-	// Act & Assert 
+	// Act & Assert
 	require.Equal(t, []color{red, none, none, none, none, red}, diagonalTopRightBottomLeft(&b.Fields, 0, 6), "should return the diagonal with given starting point")
 	require.Equal(t, []color{none, red, none, none, red}, diagonalTopRightBottomLeft(&b.Fields, 1, 6), "should return the diagonal with given starting point")
 	require.Equal(t, []color{blue, none, none, red}, diagonalTopRightBottomLeft(&b.Fields, 2, 6), "should return the diagonal with given starting point")
@@ -357,7 +357,7 @@ func TestDiagonalTopRightBottomLeft(t *testing.T) {
 	require.Equal(t, []color{none, blue, none}, diagonalTopRightBottomLeft(&b.Fields, 3, 2), "should return the diagonal with given starting point")
 }
 
-func BenchmarkFindWinner (b *testing.B) {
+func BenchmarkFindWinner(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		findwinner(newBoard())
 	}

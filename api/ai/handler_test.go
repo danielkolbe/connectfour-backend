@@ -110,7 +110,6 @@ func TestHandler(t *testing.T) {
 	require.Equal(t, http.StatusInternalServerError, rr.Code, fmt.Sprintf("should return http 500 if game service returns an unknown error"))
 	require.Equal(t, "sorry for that", bodyString, fmt.Sprintf("should add the correct error to response"))
 
-
 	// Arrange
 	cookie = &http.Cookie{Name: "gameID", Value: "324234-444"}
 	req, _ = http.NewRequest("", "", bytes.NewReader(nil))

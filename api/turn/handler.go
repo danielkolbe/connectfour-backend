@@ -56,7 +56,7 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 			w.WriteHeader(http.StatusNotFound)
 		case *game.ColumnIsOutOfBoundsError:
 			logger.Logger.Error(t)
-			w.WriteHeader(http.StatusBadRequest)				
+			w.WriteHeader(http.StatusBadRequest)
 		default:
 			logger.Logger.Error(t)
 			err = fmt.Errorf("sorry for that")

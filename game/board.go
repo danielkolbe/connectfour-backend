@@ -10,8 +10,8 @@ import (
 type Board struct {
 	Fields    [nRows][nCols]color
 	NextColor color
-	winner color
-	mutex sync.Mutex
+	winner    color
+	mutex     sync.Mutex
 }
 
 type color int
@@ -31,7 +31,7 @@ func (b Board) String() string {
 		for column := 0; column < nCols; column++ {
 			str.WriteString(b.Fields[row][column].String())
 			str.WriteString(" ")
-		}    
+		}
 		str.WriteString("\n")
 	}
 	return str.String()
@@ -51,10 +51,10 @@ func newBoard() *Board {
 }
 
 // addChip adds a new chip to the Board inserting
-// it at the specified column. The color if the chip will be 
+// it at the specified column. The color if the chip will be
 // the color of the next turns chip. If the column is
-// full or out of bounds or the match has already a winner 
-// an customn error will be returned. 
+// full or out of bounds or the match has already a winner
+// an customn error will be returned.
 func (b *Board) addChip(column int) error {
 	winner := b.win()
 	b.mutex.Lock()
@@ -75,7 +75,7 @@ func (b *Board) addChip(column int) error {
 		}
 	}
 	b.NextColor = (2 - (b.NextColor - 1))
-	
+
 	return nil
 }
 
@@ -89,8 +89,8 @@ func (b *Board) win() color {
 	}
 	b.winner = findwinner(b)
 
-	return b.winner;
-} 
+	return b.winner
+}
 
 // freeColumns returns indices of the columns of the
 // board that are not already full
@@ -100,6 +100,6 @@ func (b *Board) freeColumns() []int {
 		if none == b.Fields[0][i] {
 			c = append(c, i)
 		}
-	}  
+	}
 	return c
-}	
+}

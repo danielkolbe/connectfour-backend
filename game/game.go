@@ -7,7 +7,7 @@ type CFour struct{}
 
 // MC is used to implement the game.AI interface
 // using a MonteCarlo algorithm
-type MC struct {}
+type MC struct{}
 
 // Service provides a collection of functions
 // that can perform actions on a game.Board.
@@ -23,10 +23,10 @@ type Service interface {
 	// can be referenced with the id on later calls.
 	Board(string) Board
 	// Winner returns the winning color for the board
-    // with the given gameID. 
+	// with the given gameID.
 	Winner(string) (string, error)
-    // Reset sets the board with given gameID back to its initial state.
-	Reset(string) (error)
+	// Reset sets the board with given gameID back to its initial state.
+	Reset(string) error
 }
 
 // AI provides a collection of functions
@@ -39,7 +39,7 @@ type AI interface {
 }
 
 // TurnAI calls the NextTurn function on the given instance of
-// AI passing the Board with the given gameID. 
+// AI passing the Board with the given gameID.
 // It calls addChip with the column index returned by NextTurn and
 // returns the column index. It returns an BoardDoesNotExistError
 // if no board matching the given gameID exists, a specific error if
@@ -49,27 +49,27 @@ func (c CFour) TurnAI(gameID string, ai AI) (int, error) {
 	if !ok {
 		return -1, NewBoardDoesNotExistError(gameID)
 	}
-	column, err:= ai.NextTurn(b)
+	column, err := ai.NextTurn(b)
 	if nil != err {
 		return -1, err
 	}
-	
-	return column, b.addChip(column);	
+
+	return column, b.addChip(column)
 }
 
 // Turn calls Board.addChip with the given column
-// on the Board with the given gameID. It returns an 
+// on the Board with the given gameID. It returns an
 // BoardDoesNotExistError if no such board exists,
 // a specific error if the board is not in an legal
 // state for such an operation.
 func (c CFour) Turn(column int, gameID string) error {
 	if b, ok := gameDb[gameID]; ok {
 		return b.addChip(column)
-	} 
+	}
 	return NewBoardDoesNotExistError(gameID)
 }
 
-// Board returns a copy of the game board that belongs to 
+// Board returns a copy of the game board that belongs to
 // the given game id. If such a board does not exist a new board
 // with that id will be instantiated and returned.
 func (c CFour) Board(gameID string) Board {
@@ -84,21 +84,21 @@ func (c CFour) Board(gameID string) Board {
 }
 
 // Winner returns the winning color for the board
-// with the given gameID. It returns an 
+// with the given gameID. It returns an
 // BoardDoesNotExistError if no such board exists.
 func (c CFour) Winner(gameID string) (string, error) {
 	if board, ok := gameDb[gameID]; ok {
 		return board.win().String(), nil
-	} 
+	}
 	return "", NewBoardDoesNotExistError(gameID)
 }
 
 // Reset sets the board with given gameID back to its initial state.
-// It returns an BoardDoesNotExistError if no such board exists. 
+// It returns an BoardDoesNotExistError if no such board exists.
 func (c CFour) Reset(gameID string) error {
 	if _, ok := gameDb[gameID]; ok {
 		gameDb[gameID] = newBoard()
-		return  nil
-	} 
+		return nil
+	}
 	return NewBoardDoesNotExistError(gameID)
 }

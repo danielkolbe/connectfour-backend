@@ -1,7 +1,7 @@
 package game
 
 // findwinner returns a color if four contiguous fields of the given
-// board of that color in a horizontal, vertical or diagonal line exist. 
+// board of that color in a horizontal, vertical or diagonal line exist.
 // It returns none otherwise.
 // If this condition applies for both colors one of both will be returned.
 func findwinner(b *Board) color {
@@ -138,4 +138,3 @@ func diagonalTopRightBottomLeft(fields *[nRows][nCols]color, row int, column int
 	}
 	return diagonal
 }
-

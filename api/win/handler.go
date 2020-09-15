@@ -36,7 +36,7 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		case *game.BoardDoesNotExistError:
 			logger.Logger.Error(t)
 			err = fmt.Errorf("no board created, please perform a GET request on /board first")
-			w.WriteHeader(http.StatusNotFound)			
+			w.WriteHeader(http.StatusNotFound)
 		default:
 			logger.Logger.Error(t)
 			err = fmt.Errorf("sorry for that")

@@ -156,12 +156,12 @@ func TestNextTurn(t *testing.T) {
 	// Assert
 	require.Contains(t, [2]int{1, 4}, column, "should return column 1 or column to prevent blue players victory in two turns.")
 	require.Equal(t, nil, err, "error should be nil")
-	
+
 	// Arrange
 	b = &Board{Fields: [nRows][nCols]color{
 		{red, red, red, none, red, red, red},
 		{red, red, blue, blue, red, red, red},
-		{blue, red, blue, blue,none, red, red},
+		{blue, red, blue, blue, none, red, red},
 		{red, none, red, red, blue, blue, blue},
 		{blue, red, red, blue, red, red, red},
 		{blue, red, blue, blue, red, red, red},
@@ -172,7 +172,7 @@ func TestNextTurn(t *testing.T) {
 	// Assert
 	require.Equal(t, 3, column, "should return last non-full column")
 	require.Equal(t, nil, err, "error should be nil")
-	
+
 	// Arrange
 	b = &Board{Fields: [nRows][nCols]color{
 		{red, red, red, blue, red, red, red},
@@ -205,4 +205,3 @@ func TestNextTurn(t *testing.T) {
 	require.Equal(t, -1, column, "should return -1 if the board has a winner already")
 	require.Equal(t, NewMatchIsOverError("match has already a winner"), err, "should return a NewMatchIsOverError if the board has a winner already")
 }
-	

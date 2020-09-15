@@ -156,8 +156,8 @@ func TestFreeColumns(t *testing.T) {
 		{none, red, red, red, blue, red, none},
 	}}
 	// Act & Assert
-	require.Equal(t, []int {0,2,3,4,6}, b.freeColumns(), "Should return the indices of non-full columns")
-	
+	require.Equal(t, []int{0, 2, 3, 4, 6}, b.freeColumns(), "Should return the indices of non-full columns")
+
 	// Arrange
 	b = Board{Fields: [nRows][nCols]color{
 		{none, none, none, none, none, none, none},
@@ -168,8 +168,8 @@ func TestFreeColumns(t *testing.T) {
 		{none, red, red, red, blue, red, none},
 	}}
 	// Act & Assert
-	require.Equal(t, []int {0,1,2,3,4,5,6}, b.freeColumns(), "Should return the indices of non-full columns")
-	
+	require.Equal(t, []int{0, 1, 2, 3, 4, 5, 6}, b.freeColumns(), "Should return the indices of non-full columns")
+
 	// Arrange
 	b = Board{Fields: [nRows][nCols]color{
 		{red, red, red, red, red, red, red},
@@ -180,5 +180,5 @@ func TestFreeColumns(t *testing.T) {
 		{none, red, red, red, blue, red, none},
 	}}
 	// Act & Assert
-	require.Equal(t, []int {}, b.freeColumns(), "Should return an empty slice")
+	require.Equal(t, []int{}, b.freeColumns(), "Should return an empty slice")
 }

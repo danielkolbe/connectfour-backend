@@ -24,7 +24,7 @@ func NewHandler(gameService game.Service, gameID func(w http.ResponseWriter, req
 // ServerHTTP takes an incoming (Patch) to reset the related game board.
 // Steps:
 // 1) Extract gameID from cookie if present, else create and set cookie
-// 2) Calls gameService.Reset with the gameID 
+// 2) Calls gameService.Reset with the gameID
 // 3) Convert error into matching http response if any
 func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	gameID := h.gameID(w, req)
@@ -35,7 +35,7 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		case *game.BoardDoesNotExistError:
 			logger.Logger.Error(t)
 			err = fmt.Errorf("no board created, please perform a GET request on /board first")
-			w.WriteHeader(http.StatusNotFound)			
+			w.WriteHeader(http.StatusNotFound)
 		default:
 			logger.Logger.Error(t)
 			err = fmt.Errorf("sorry for that")

@@ -11,11 +11,11 @@ import (
 // Handler implements the http.Handler interface.
 type Handler struct {
 	gameService game.Service
-	ai   		game.AI
+	ai          game.AI
 	gameID      func(w http.ResponseWriter, req *http.Request) string
 }
 
-type AITurn struct{
+type AITurn struct {
 	Column int
 }
 
@@ -27,7 +27,7 @@ func NewHandler(gameService game.Service, ai game.AI, gameID func(w http.Respons
 	return panicRecover(Handler{gameService, ai, gameID})
 }
 
-// ServerHTTP takes an incoming (PATCH) request to perform on 
+// ServerHTTP takes an incoming (PATCH) request to perform on
 // artifical intelligence move on the related board. Returns
 // the index of the column where the next chip was inserted.
 // Steps:
@@ -48,7 +48,7 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		case *game.BoardDoesNotExistError:
 			err = fmt.Errorf("no board created, please perform a GET request on /board first")
 			logger.Logger.Error(t)
-			w.WriteHeader(http.StatusNotFound)			
+			w.WriteHeader(http.StatusNotFound)
 		default:
 			logger.Logger.Error(t)
 			err = fmt.Errorf("sorry for that")

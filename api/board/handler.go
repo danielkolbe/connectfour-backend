@@ -3,22 +3,22 @@ package board
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"github.com/danielkolbe/connectfour/game"
 	"github.com/danielkolbe/connectfour/logger"
+	"net/http"
 )
 
 // Handler implements the http.Handler interface.
 type Handler struct {
 	gameService game.Service
-	gameID func(w http.ResponseWriter, req *http.Request) string
+	gameID      func(w http.ResponseWriter, req *http.Request) string
 }
 
 // NewHandler returns a new Handler instance.
 // If NewHandler is used, the returned handler will
 // be wrapped so that any panic that is escalated to the
 // handler will be turned into an http 500 response
-func NewHandler(gameService game.Service,  gameID func(w http.ResponseWriter, req *http.Request) string) http.Handler {
+func NewHandler(gameService game.Service, gameID func(w http.ResponseWriter, req *http.Request) string) http.Handler {
 	return panicRecover(Handler{gameService, gameID})
 }
 

@@ -4,6 +4,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"testing"
 )
+
 func TestErrors(t *testing.T) {
 	// Act & Assert
 	require.Equal(t, "message", NewMatchIsOverError("message").Error(), "should contain the correct error message")

@@ -1,8 +1,8 @@
 package api
 
 import (
-	"net/http"
 	uuid "github.com/satori/go.uuid"
+	"net/http"
 )
 
 // GameID extracts the gameId from cookie if present,

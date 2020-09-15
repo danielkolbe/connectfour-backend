@@ -33,15 +33,13 @@ func (mock *GameServiceMock) Turn(column int, gameID string) error {
 
 func (mock *GameServiceMock) Winner(gameID string) (string, error) {
 	fmt.Println("The number you have dialed is not available.")
-	return "" , nil
+	return "", nil
 }
 
-func (mock *GameServiceMock) Reset(gameID string) (error) {
+func (mock *GameServiceMock) Reset(gameID string) error {
 	fmt.Println("The number you have dialed is not available.")
 	return nil
 }
-
-
 
 var h http.Handler
 
@@ -72,8 +70,8 @@ func TestHandler(t *testing.T) {
 	require.Equal(t, http.StatusOK, rr.Code, fmt.Sprintf("should return http 200 if request is valid"))
 	require.Equal(t, nil, err, fmt.Sprintf("should return fields of board as json if content type is application/json"))
 	require.Equal(t, "application/json", rr.Header().Get("Content-Type"), fmt.Sprintf("header should be set to content-type application/json"))
-    
-    // Arrange
+
+	// Arrange
 	req, _ = http.NewRequest("", "", nil)
 	req.Header.Set("Content-type", "")
 	req.AddCookie(&http.Cookie{Name: "gameID", Value: "324234-555"})
@@ -85,12 +83,12 @@ func TestHandler(t *testing.T) {
 	// Assert
 	require.Equal(t, http.StatusOK, rr.Code, fmt.Sprintf("should return http 200 if request is valid"))
 	require.Equal(t,
-		"n n n n n n n \n" +
-		"n n n n n n n \n" + 
-		"n n n n n n n \n" + 
-		"n n n n n n n \n" + 
-		"n n n n n n n \n" +
-		"n n n n n n n \n", string(body), fmt.Sprint("should return fields of board as text if content type is NOT application/json"))
+		"n n n n n n n \n"+
+			"n n n n n n n \n"+
+			"n n n n n n n \n"+
+			"n n n n n n n \n"+
+			"n n n n n n n \n"+
+			"n n n n n n n \n", string(body), fmt.Sprint("should return fields of board as text if content type is NOT application/json"))
 
 	// Arrange
 	req, _ = http.NewRequest("", "", nil)
